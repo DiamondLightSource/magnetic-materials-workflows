@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
-  name: mmg_test_python
+  name: mmg-test-python
 spec:
-  entrypoint: mmg_test_python
+  entrypoint: mmg-test-python
   templates:
-  - name: mmg_test_python
+  - name: mmg-test-python
     inputs:
       parameters:
       - name: size
@@ -18,12 +18,26 @@ spec:
       source: |
         import numpy as np
         import time
+        import h5py
         
-        n = int("{{ inputs.parameters.size }}")
-        A = np.random.randn(n,n).astype('float64')
-        B = np.random.randn(n,n).astype('float64')
-        start_time = time.time()
-        nrm = np.linalg.norm(A@B)
-        print(" took {} seconds ".format(time.time() - start_time))
-        print(" norm = ",nrm)
-        print(np.__config__.show())
+        with h5py.File('1057496.nxs', 'r') as hdf:
+          dataset = hdf['entry1/scan_command']
+          cmd = dataset.asstr()[()]
+        print(f"Scan command: {cmd}")
+
+      source: |
+          import numpy as np
+          import time
+          import h5py
+
+          print('{{namespace}}')
+          print('{{workflow.inputs.scanno}}')
+          print('{{workflow.inputs.message}}')
+
+          filename = '/dls/i16/data/2024/{{workflow.metadata.namespace}}/{{workflow.inputs.scanno}}.nxs'
+          print(filename)
+
+          with h5py.File(filename, 'r') as hdf:
+            dataset = hdf['entry1/scan_command']
+            cmd = dataset.asstr()[()]
+          print(f"Scan command: {cmd}")
