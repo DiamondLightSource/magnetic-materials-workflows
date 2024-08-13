@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: mmg_test_python
+spec:
+  entrypoint: mmg_test_python
+  templates:
+  - name: mmg_test_python
+    inputs:
+      parameters:
+      - name: size
+        value: 2000
+      - name: memory
+        value: 20Gi
+    script:
+      image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc1
+      command: ["python"]
+      source: |
+        import numpy as np
+        import time
+        
+        n = int("{{ inputs.parameters.size }}")
+        A = np.random.randn(n,n).astype('float64')
+        B = np.random.randn(n,n).astype('float64')
+        start_time = time.time()
+        nrm = np.linalg.norm(A@B)
+        print(" took {} seconds ".format(time.time() - start_time))
+        print(" norm = ",nrm)
+        print(np.__config__.show())
