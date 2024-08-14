@@ -33,13 +33,17 @@ spec:
       command: ["python"]
       source: |
         import numpy as np
-        import time
-        import h5py
+        import matplotlib.pyplot as plt
+        import babelscan
+        
+        from babelscan.plotting_matplotlib import set_plot_defaults
+        set_plot_defaults()  # set custom matplotlib rcParams
+        i16 = babelscan.instrument_from_config('i16')
   
         filename = '{{workflow.parameters.visitdir}}/{{inputs.parameters.scanno}}.nxs'
         print(filename)
+        scan = i16.scan(filename)
+        print(scan)
+        cmd = scan('cmd')
   
-        with h5py.File(filename, 'r') as hdf:
-          dataset = hdf['entry1/scan_command']
-          cmd = dataset.asstr()[()]
         {{inputs.parameters.python-code}}
