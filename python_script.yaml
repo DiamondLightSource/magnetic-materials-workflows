@@ -26,7 +26,7 @@ spec:
         value: | 
           print(f"Scan command: {cmd}")
     script:
-      image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc1
+      image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc2
       volumeMounts:
         - name: session
           mountPath: "{{ workflow.parameters.visitdir }}"
