@@ -4,40 +4,42 @@ metadata:
   name: mmg-test-python
 spec:
   entrypoint: mmg-test-python
+  arguments:
+    parameters:
+      - name: visitdir
+        valueFrom:
+          configMapKeyRef:
+            name: sessionspaces
+            key: data_directory
+  volumes:
+    - name: session
+      hostPath:
+        path: "{{ workflow.parameters.visitdir }}"
+        type: Directory
   templates:
   - name: mmg-test-python
     inputs:
       parameters:
-      - name: size
-        value: 2000
-      - name: memory
-        value: 20Gi
+      - name: scanno
+        value: 1057496
+      - name: python-code
+        value: | 
+          print(f"Scan command: {cmd}")
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc1
+      volumeMounts:
+        - name: session
+          mountPath: "{{ workflow.parameters.visitdir }}"
       command: ["python"]
       source: |
         import numpy as np
         import time
         import h5py
-        
-        with h5py.File('1057496.nxs', 'r') as hdf:
+  
+        filename = '{{workflow.parameters.visitdir}}/{{inputs.parameters.scanno}}.nxs'
+        print(filename)
+  
+        with h5py.File(filename, 'r') as hdf:
           dataset = hdf['entry1/scan_command']
           cmd = dataset.asstr()[()]
-        print(f"Scan command: {cmd}")
-
-      source: |
-          import numpy as np
-          import time
-          import h5py
-
-          print('{{namespace}}')
-          print('{{workflow.inputs.scanno}}')
-          print('{{workflow.inputs.message}}')
-
-          filename = '/dls/i16/data/2024/{{workflow.metadata.namespace}}/{{workflow.inputs.scanno}}.nxs'
-          print(filename)
-
-          with h5py.File(filename, 'r') as hdf:
-            dataset = hdf['entry1/scan_command']
-            cmd = dataset.asstr()[()]
-          print(f"Scan command: {cmd}")
+        {{inputs.parameters.python-code}}
