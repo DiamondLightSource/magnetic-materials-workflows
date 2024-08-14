@@ -37,12 +37,12 @@ spec:
         
         # from babelscan.plotting_matplotlib import set_plot_defaults
         # set_plot_defaults()  # set custom matplotlib rcParams
-        i16 = babelscan.instrument_from_config('i16')
+        # i16 = babelscan.instrument_from_config('i16')
   
         filename = '{{workflow.parameters.visitdir}}/{{inputs.parameters.scanno}}.nxs'
         print(filename)
-        scan = i16.scan(filename)
+        scan = babelscan.file_loader(filename)
         print(scan)
-        cmd = scan('cmd')
+        cmd = scan('scan_command')
   
         {{inputs.parameters.python-code}}
