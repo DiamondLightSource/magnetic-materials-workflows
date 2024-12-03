@@ -33,15 +33,11 @@ spec:
       command: ["python"]
       source: |
         import numpy as np
-        import babelscan
-        
-        # from babelscan.plotting_matplotlib import set_plot_defaults
-        # set_plot_defaults()  # set custom matplotlib rcParams
-        # i16 = babelscan.instrument_from_config('i16')
+        import hdfmap
   
         filename = '{{workflow.parameters.visitdir}}/{{inputs.parameters.scanno}}.nxs'
         print(filename)
-        scan = babelscan.file_loader(filename)
+        scan = hdfmap.NexusLoader(filename)
         print(scan)
         cmd = scan('scan_command')
   
