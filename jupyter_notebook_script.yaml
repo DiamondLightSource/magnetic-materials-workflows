@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
-  name: mmg-test-python
+  name: mmg-test-notebook
 spec:
-  entrypoint: mmg-test-python
+  entrypoint: mmg-test-notebook
   templates:
     - name: notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc4
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
         command:
           - jupyter-nbconvert
           - --execute
@@ -21,8 +21,8 @@ spec:
         source: |
           {{ .Files.Get "notebooks/notebook.ipynb" | fromJson | toPrettyJson | nindent 10 }}
         volumeMounts:
-          - name: outputs
-            mountPath: /outputs
+          - name: tmpdir
+            mountPath: /tmpdir
   volumeClaimTemplates:
     - metadata:
         name: tmpdir
