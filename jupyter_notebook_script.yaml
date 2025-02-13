@@ -19,7 +19,7 @@ spec:
           - --output-dir
           - /outputs
         source: |
-          {{ .Files.Get "notebooks/notebook.ipynb" | fromJson | toPrettyJson | nindent 10 }}
+          {{ .Files.Get "notebooks/mmg_test_processor.ipynb" | fromJson | toPrettyJson | nindent 10 }}
         volumeMounts:
           - name: tmpdir
             mountPath: /tmpdir
