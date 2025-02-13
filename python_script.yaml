@@ -42,7 +42,3 @@ spec:
         cmd = scan('scan_command')
   
         {{inputs.parameters.python-code}}
-    outputs:
-      artifacts:
-        - name: 'some data'
-          path: '/tmp/data.json'
