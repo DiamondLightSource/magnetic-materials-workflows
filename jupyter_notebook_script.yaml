@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: mmg-test-python
+spec:
+  entrypoint: mmg-test-python
+  templates:
+    - name: notebook
+      script:
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc4
+        command:
+          - jupyter-nbconvert
+          - --execute
+          - --stdin
+          - --to
+          - html
+          - --output
+          - notebook
+          - --output-dir
+          - /outputs
+        source: |
+          {{ .Files.Get "notebooks/notebook.ipynb" | fromJson | toPrettyJson | nindent 10 }}
+        volumeMounts:
+          - name: outputs
+            mountPath: /outputs
+  volumeClaimTemplates:
+    - metadata:
+        name: tmpdir
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-path
+  arguments:
+    parameters:
+      - name: visitdir
+        valueFrom:
+          configMapKeyRef:
+            name: sessionspaces
+            key: data_directory
+  volumes:
+    - name: session
+      hostPath:
+        path: "{{ workflow.parameters.visitdir }}"
+        type: Directory
