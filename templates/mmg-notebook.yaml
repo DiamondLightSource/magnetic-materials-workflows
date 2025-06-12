@@ -57,13 +57,15 @@ spec:
           python -m venv /tmp/venv
           /tmp/venv/bin/pip install -r /tmp/requirements.txt
           /tmp/venv/bin/python -m ipykernel install --prefix=/tmp/venv --name=venv
-          /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook-parametrized.ipynb \
+          /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
-          /tmp/venv/bin/jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook-parametrized.ipynb
+          /tmp/venv/bin/jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
             mountPath: /tmp
+          - name: session
+            mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
       outputs:
         artifacts:
           - name: notebook
