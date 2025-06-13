@@ -14,31 +14,31 @@ spec:
   volumes:
     - name: session
       hostPath:
-        path: "{{ workflow.parameters.visitdir }}"
+        path: "{{`{{ workflow.parameters.visitdir }}`}}"
         type: Directory
   templates:
   - name: mmg-test-python
     inputs:
       parameters:
-      - name: scanno
-        value: 1057496
+      - name: scan-no
+        value: 26804
       - name: python-code
-        value: | 
+        value: |
           print(f"Scan command: {cmd}")
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
       volumeMounts:
         - name: session
-          mountPath: "{{ workflow.parameters.visitdir }}"
+          mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
       command: ["python"]
       source: |
         import numpy as np
         import hdfmap
-  
-        filename = '{{workflow.parameters.visitdir}}/{{inputs.parameters.scanno}}.nxs'
+
+        filename = '{{`{{workflow.parameters.visitdir}}`}}/i10-1-{{`{{inputs.parameters.scan-no}}`}}.nxs'
         print(filename)
         scan = hdfmap.NexusLoader(filename)
         print(scan)
         cmd = scan('scan_command')
-  
-        {{inputs.parameters.python-code}}
+
+        {{`{{inputs.parameters.python-code}}`}}
