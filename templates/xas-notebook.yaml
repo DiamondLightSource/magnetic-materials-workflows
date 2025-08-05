@@ -54,6 +54,7 @@ spec:
         source: |
           python -m venv /tmp/venv
           /tmp/venv/bin/pip install -r /tmp/requirements.txt
+          /tmp/venv/bin/pip install --upgrade git+https://github.com/DanPorter/mmg_toolbox.git
           /tmp/venv/bin/python -m ipykernel install --prefix=/tmp/venv --name=venv
           /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}"
