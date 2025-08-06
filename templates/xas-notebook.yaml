@@ -13,6 +13,8 @@ spec:
             key: data_directory
       - name: inpath
         value: ""
+      - name: outpath
+        value: ""
   volumes:
     - name: session
       hostPath:
@@ -58,7 +60,7 @@ spec:
           /tmp/venv/bin/python -m ipykernel install --prefix=/tmp/venv --name=venv
           /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
-            -p outpath ""
+            -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
           /tmp/venv/bin/jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
