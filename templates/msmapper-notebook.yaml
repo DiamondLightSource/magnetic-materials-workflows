@@ -51,7 +51,7 @@ spec:
             mountPath: /tmp
     - name: download-msmapper
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
+        image: docker.io/curlimages/curl
         command: [bash]
         source: |
           mkdir /tmp/msmapper

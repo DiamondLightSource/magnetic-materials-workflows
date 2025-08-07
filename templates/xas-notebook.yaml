@@ -12,9 +12,9 @@ spec:
             name: sessionspaces
             key: data_directory
       - name: inpath
-        value: "{{`{{ workflow.parameters.visitdir }}`}}"
+        value: ""
       - name: outpath
-        value: "{{`{{ workflow.parameters.visitdir }}`}}/processing"
+        value: ""
   volumes:
     - name: session
       hostPath:
