@@ -1,0 +1,97 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: msmapper-notebook
+spec:
+  entrypoint: msmapper-notebook
+  arguments:
+    parameters:
+      - name: visitdir
+        valueFrom:
+          configMapKeyRef:
+            name: sessionspaces
+            key: data_directory
+      - name: inpath
+        value: ""
+      - name: outpath
+        value: ""
+  volumes:
+    - name: session
+      hostPath:
+        path: "{{`{{ workflow.parameters.visitdir }}`}}"
+        type: Directory
+  volumeClaimTemplates:
+    - metadata:
+        name: tmp
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-path
+    - metadata:
+        name: tmpdir
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-path
+
+  templates:
+    - name: mount-files
+      script:
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
+        command: [bash]
+        source: |
+          echo '{{ .Files.Get "notebooks/msmapper_notebook.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+          echo '{{ .Files.Get "notebooks/requirements.txt" | b64enc }}' | base64 -d > /tmp/requirements.txt
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+    - name: download-msmapper
+      script:
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
+        command: [bash]
+        source: |
+          mkdir /tmp/msmapper
+          curl https://alfred.diamond.ac.uk/MSMapper/master/builds-snapshot/MSMapper-1.9.0.v20250205-1441-linux.x86_64.zip -o /tmp/msmapper/archive.zip
+          unzip -n /tmp/msmapper/archive.zip -d /tmp/msmapper
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+    - name: convert-notebook
+      script:
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
+        command: [bash]
+        source: |
+          python -m venv /tmp/venv
+          /tmp/venv/bin/pip install -r /tmp/requirements.txt
+          /tmp/venv/bin/pip install --upgrade git+https://github.com/DiamondLightSource/i16_msmapper.git
+          /tmp/venv/bin/python -m ipykernel install --prefix=/tmp/venv --name=venv
+          /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}"
+            -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
+            -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
+          /tmp/venv/bin/jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+          - name: session
+            mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      outputs:
+        artifacts:
+          - name: notebook
+            path: /tmp/notebook.html
+            archive:
+              none: {}
+    - name: msmapper-notebook
+      dag:
+        tasks:
+          - name: mount-files
+            template: mount-files
+          - name: download-msmapper
+            template: download-msmapper
+          - name: convert-notebook
+            template: convert-notebook
+            dependencies: [mount-files, download-msmapper]
