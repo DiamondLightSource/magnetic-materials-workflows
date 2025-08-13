@@ -54,7 +54,6 @@ spec:
         command: [bash]
         source: |
           python -m pip install --upgrade git+https://github.com/DiamondLightSource/i16_msmapper.git
-          python -m ipykernel install --prefix=/tmp/venv --name=venv
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}"
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \

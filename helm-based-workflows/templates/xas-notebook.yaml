@@ -45,7 +45,6 @@ spec:
         command: [bash]
         source: |
           echo '{{ .Files.Get "notebooks/xas_notebook.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
-          echo '{{ .Files.Get "notebooks/requirements.txt" | b64enc }}' | base64 -d > /tmp/requirements.txt
         volumeMounts:
           - name: tmp
             mountPath: /tmp
@@ -55,7 +54,6 @@ spec:
         command: [bash]
         source: |
           python -m pip install --upgrade git+https://github.com/DanPorter/mmg_toolbox.git
-          python -m ipykernel install --prefix=/tmp/venv --name=venv
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
