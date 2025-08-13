@@ -57,7 +57,7 @@ spec:
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
-          jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+          python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
             mountPath: /tmp
