@@ -41,7 +41,7 @@ spec:
   templates:
     - name: mount-files
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
         command: [bash]
         source: |
           echo '{{ .Files.Get "notebooks/xas_notebook.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
@@ -51,17 +51,15 @@ spec:
             mountPath: /tmp
     - name: convert-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
         command: [bash]
         source: |
-          python -m venv /tmp/venv
-          /tmp/venv/bin/pip install -r /tmp/requirements.txt
-          /tmp/venv/bin/pip install --upgrade git+https://github.com/DanPorter/mmg_toolbox.git
-          /tmp/venv/bin/python -m ipykernel install --prefix=/tmp/venv --name=venv
-          /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+          python -m pip install --upgrade git+https://github.com/DanPorter/mmg_toolbox.git
+          python -m ipykernel install --prefix=/tmp/venv --name=venv
+          python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
-          /tmp/venv/bin/jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+          jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
             mountPath: /tmp

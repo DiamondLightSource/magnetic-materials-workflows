@@ -26,7 +26,7 @@ spec:
         value: |
           print(f"Scan command: {cmd}")
     script:
-      image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
+      image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
       volumeMounts:
         - name: session
           mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
@@ -34,6 +34,7 @@ spec:
       source: |
         import numpy as np
         import hdfmap
+        print(hdfmap.module_info())
 
         filename = '{{`{{workflow.parameters.visitdir}}`}}/i10-1-{{`{{inputs.parameters.scan-no}}`}}.nxs'
         print(filename)
