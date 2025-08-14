@@ -63,6 +63,8 @@ spec:
         volumeMounts:
           - name: tmp
             mountPath: /tmp
+          - name: opt
+            mountPath: /opt
           - name: session
             mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
       outputs:
