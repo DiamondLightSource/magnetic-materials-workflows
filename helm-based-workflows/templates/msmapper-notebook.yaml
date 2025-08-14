@@ -15,6 +15,8 @@ spec:
         value: ""
       - name: outpath
         value: ""
+      - name: step
+        value: "[0.002]"
   volumes:
     - name: session
       hostPath:
@@ -64,7 +66,8 @@ spec:
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
-            -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
+            -p outpath "{{`{{ workflow.parameters.outpath }}`}}" \
+            -p step "{{`{{ workflow.parameters.step }}`}}"
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
