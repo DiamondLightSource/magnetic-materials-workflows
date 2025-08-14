@@ -37,6 +37,14 @@ spec:
           requests:
             storage: 1Gi
         storageClassName: local-path
+    - metadata:
+        name: opt
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-path
 
   templates:
     - name: mount-files
