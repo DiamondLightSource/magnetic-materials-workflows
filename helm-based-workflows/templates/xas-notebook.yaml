@@ -56,11 +56,9 @@ spec:
           # create matplotlib config dir
           mkdir -p /tmp/mpl
           export MPLCONFIGDIR=/tmp/mpl
-          # clone mmg_toolbox to tmpdir
-          cd /tmp
-          git pull https://github.com/DanPorter/mmg_toolbox.git
-          cd mmg_toolbox
-          # run notebook in directory with mmg_toolbox
+          # install mmg_toolbox from github repo
+          python -m pip install --user --upgrade git+https://github.com/DiamondLightSource/i16_msmapper.git
+          # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
