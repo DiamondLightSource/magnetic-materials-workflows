@@ -37,14 +37,6 @@ spec:
           requests:
             storage: 1Gi
         storageClassName: local-path
-    - metadata:
-        name: opt
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: local-path
 
   templates:
     - name: mount-files
@@ -71,8 +63,6 @@ spec:
         volumeMounts:
           - name: tmp
             mountPath: /tmp
-          - name: opt
-            mountPath: /opt
           - name: session
             mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
       outputs:
