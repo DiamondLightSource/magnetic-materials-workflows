@@ -58,7 +58,7 @@ spec:
           export MPLCONFIGDIR=/tmp/mpl
           # install mmg_toolbox from github repo
           mkdir -p /tmp/packages
-          python -m pip install -t /tmp/packages --upgrade git+https://github.com/DiamondLightSource/i16_msmapper.git
+          python -m pip install -t /tmp/packages --upgrade --no-cache-dir git+https://github.com/DiamondLightSource/i16_msmapper.git
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
