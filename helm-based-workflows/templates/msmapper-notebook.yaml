@@ -77,6 +77,10 @@ spec:
             path: /tmp/notebook.html
             archive:
               none: {}
+          - name: image
+            path: /tmp/msmapper_result.png
+            archive:
+              none: {}
     - name: msmapper-notebook
       dag:
         tasks:
