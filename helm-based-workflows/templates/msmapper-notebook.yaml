@@ -53,13 +53,13 @@ spec:
         image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
         command: [bash]
         source: |
-          conda install pip
-          python -m pip install --upgrade git+https://github.com/DiamondLightSource/i16_msmapper.git
-          python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
-            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}"
+          python -m venv /tmp/venv --system-site-packages
+          /tmp/venv/bin/pip install --upgrade git+https://github.com/DiamondLightSource/i16_msmapper.git
+          /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
-          python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+          /tmp/venv/bin/python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
             mountPath: /tmp
