@@ -57,10 +57,9 @@ spec:
           mkdir -p /tmp/mpl
           export MPLCONFIGDIR=/tmp/mpl
           # install mmg_toolbox from github repo
-          #mkdir -p /tmp/packages
-          #export PYTHONPATH=/tmp/packages
-          conda install pip
-          python -m pip install --upgrade --no-cache-dir git+https://github.com/DanPorter/mmg_toolbox.git
+          mkdir -p /tmp/packages
+          export PYTHONPATH=/tmp/packages
+          python -m pip install -t /tmp/packages --upgrade --no-cache-dir git+https://github.com/DanPorter/mmg_toolbox.git
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
