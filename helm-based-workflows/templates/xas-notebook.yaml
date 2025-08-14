@@ -53,9 +53,15 @@ spec:
         image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
         command: [bash]
         source: |
-          python -m venv /tmp/venv --system-site-packages
-          /tmp/venv/bin/pip install --upgrade git+https://github.com/DanPorter/mmg_toolbox.git
-          /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+          # create matplotlib config dir
+          mkdir -p /tmp/mpl
+          export MPLCONFIGDIR=/tmp/mpl
+          # clone mmg_toolbox to tmpdir
+          cd /tmp
+          git pull https://github.com/DanPorter/mmg_toolbox.git
+          cd mmg_toolbox
+          # run notebook in directory with mmg_toolbox
+          python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
