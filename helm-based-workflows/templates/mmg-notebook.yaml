@@ -29,39 +29,24 @@ spec:
           requests:
             storage: 1Gi
         storageClassName: local-path
-    - metadata:
-        name: tmpdir
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: local-path
 
   templates:
-    - name: mount-files
-      script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
-        command: [bash]
-        source: |
-          echo '{{ .Files.Get "notebooks/mmg_test_processor.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
-          echo '{{ .Files.Get "notebooks/requirements.txt" | b64enc }}' | base64 -d > /tmp/requirements.txt
-        volumeMounts:
-          - name: tmp
-            mountPath: /tmp
     - name: convert-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.1.0-rc3
-        command: [bash]
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
+        command: [ bash ]
         source: |
-          python -m venv /tmp/venv
-          /tmp/venv/bin/pip install -r /tmp/requirements.txt
-          /tmp/venv/bin/pip install --upgrade git+https://github.com/DanPorter/mmg_toolbox.git
-          /tmp/venv/bin/python -m ipykernel install --prefix=/tmp/venv --name=venv
-          /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+          # mount-files
+          echo '{{ .Files.Get "notebooks/mmg_processor.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+          # create matplotlib config dir
+          mkdir -p /tmp/mpl
+          export MPLCONFIGDIR=/tmp/mpl
+          # run notebook
+          python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
             -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
             -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
-          /tmp/venv/bin/jupyter nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+          python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
             mountPath: /tmp
@@ -73,11 +58,16 @@ spec:
             path: /tmp/notebook.html
             archive:
               none: {}
+          - name: plot
+            path: /tmp/output.png
+            archive:
+              none: {}
+          - name: dat-file
+            path: /tmp/nexus.dat
+            archive:
+              none: {}
     - name: mmg-test-notebook
       dag:
         tasks:
-          - name: mount-files
-            template: mount-files
           - name: convert-notebook
             template: convert-notebook
-            dependencies: [mount-files]
