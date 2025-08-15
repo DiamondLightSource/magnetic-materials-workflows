@@ -11,10 +11,8 @@ spec:
           configMapKeyRef:
             name: sessionspaces
             key: data_directory
-      - name: inpath
-        value: ""
-      - name: outpath
-        value: ""
+      - name: scan_numbers
+        value: "12345, 12346"
       - name: step
         value: "[0.002]"
   volumes:
@@ -65,8 +63,7 @@ spec:
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
-            -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
-            -p outpath "{{`{{ workflow.parameters.outpath }}`}}" \
+            -p scan_numbers "{{`{{ workflow.parameters.scan_numbers }}`}}" \
             -p step "{{`{{ workflow.parameters.step }}`}}"
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
@@ -82,6 +79,10 @@ spec:
               none: {}
           - name: image
             path: /tmp/msmapper_result.png
+            archive:
+              none: {}
+          - name: NeXus
+            path: /tmp/msmapper_result.nxs
             archive:
               none: {}
     - name: msmapper-notebook
