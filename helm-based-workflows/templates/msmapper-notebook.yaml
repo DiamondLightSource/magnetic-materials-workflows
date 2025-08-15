@@ -29,30 +29,15 @@ spec:
           requests:
             storage: 1Gi
         storageClassName: local-path
-    - metadata:
-        name: tmpdir
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: local-path
 
   templates:
-    - name: mount-files
+    - name: run-msmapper-notebook
       script:
         image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
         command: [bash]
         source: |
+          # mount-files
           echo '{{ .Files.Get "notebooks/msmapper_notebook.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
-        volumeMounts:
-          - name: tmp
-            mountPath: /tmp
-    - name: convert-notebook
-      script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
-        command: [bash]
-        source: |
           # create matplotlib config dir
           mkdir -p /tmp/mpl
           export MPLCONFIGDIR=/tmp/mpl
@@ -90,8 +75,5 @@ spec:
     - name: msmapper-notebook
       dag:
         tasks:
-          - name: mount-files
-            template: mount-files
-          - name: convert-notebook
-            template: convert-notebook
-            dependencies: [mount-files]
+          - name: run-msmapper
+            template: run-msmapper-notebook
