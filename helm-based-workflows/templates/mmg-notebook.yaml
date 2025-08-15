@@ -63,7 +63,7 @@ spec:
             archive:
               none: {}
           - name: dat-file
-            path: /tmp/nexus.dat
+            path: /tmp/nexus.txt
             archive:
               none: {}
     - name: mmg-test-notebook
