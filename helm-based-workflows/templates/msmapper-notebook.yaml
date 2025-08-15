@@ -56,6 +56,8 @@ spec:
           # create matplotlib config dir
           mkdir -p /tmp/mpl
           export MPLCONFIGDIR=/tmp/mpl
+          # set msmapper java options
+          export JAVA_TOOL_OPTIONS=-Duser.name=workflows
           # install mmg_toolbox from github repo
           mkdir -p /tmp/packages
           export PYTHONPATH=/tmp/packages
