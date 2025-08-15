@@ -81,6 +81,10 @@ spec:
             path: /tmp/msmapper_result.png
             archive:
               none: {}
+          - name: msmapper-log
+            path: /tmp/msmapper_result.log
+            archive:
+              none: {}
     - name: msmapper-notebook
       dag:
         tasks:
