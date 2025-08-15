@@ -48,10 +48,10 @@ spec:
         volumeMounts:
           - name: tmp
             mountPath: /tmp
-    - name: install-i16-msmapper
+    - name: convert-notebook
       script:
         image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
-        command: [ bash ]
+        command: [bash]
         source: |
           # create matplotlib config dir
           mkdir -p /tmp/mpl
@@ -60,14 +60,6 @@ spec:
           mkdir -p /tmp/packages
           export PYTHONPATH=/tmp/packages
           python -m pip install -t /tmp/packages --upgrade --no-cache-dir git+https://github.com/DiamondLightSource/i16_msmapper.git
-        volumeMounts:
-          - name: tmp
-            mountPath: /tmp
-    - name: convert-notebook
-      script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
-        command: [bash]
-        source: |
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
@@ -94,8 +86,6 @@ spec:
         tasks:
           - name: mount-files
             template: mount-files
-          - name: install-i16-msmapper
-            template: install-i16-msmapper
           - name: convert-notebook
             template: convert-notebook
-            dependencies: [mount-files, install-i16-msmapper]
+            dependencies: [mount-files]
