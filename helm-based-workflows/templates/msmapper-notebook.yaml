@@ -9,7 +9,7 @@ metadata:
     workflows.argoproj.io/description: |
       Runs the msmapper program to re-map detector images
       from i16 NeXus files into reciprocal lattice units.
-    workflows.diamond.ac.uk/repository: "<a href=https://github.com/DiamondLightSource/magnetic-materials-workflows>magnetic-materials-workflows</>"
+    workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
     workflows.diamond.ac.uk/parameter-schema.scan_numbers: |
       {
         "type": "string",
@@ -81,7 +81,7 @@ spec:
       - name: step
         value: "[0.002]"
       - name: reduce_box
-        value: true
+        value: "true"
       - name: normalisation
         value: 'rc'
   volumes:
