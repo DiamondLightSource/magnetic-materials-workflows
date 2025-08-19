@@ -63,7 +63,7 @@ metadata:
             "type": "Control",
             "scope": "#/properties/reduce_box",
             "label": "Reduce size"
-          },
+          }
         ]
       }
 
