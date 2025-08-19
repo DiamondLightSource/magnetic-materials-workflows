@@ -16,9 +16,7 @@ spec:
       - name: step
         value: "[0.002]"
       - name: reduce_box
-        valueFrom:
-          - True
-          - False
+        value: true
       - name: normalisation
         valueFrom:
           - 'rc'
