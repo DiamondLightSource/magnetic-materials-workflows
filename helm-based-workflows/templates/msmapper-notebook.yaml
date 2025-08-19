@@ -120,8 +120,8 @@ spec:
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
             -p scan_numbers "{{`{{ workflow.parameters.scan_numbers }}`}}" \
-            -p step "{{`{{ workflow.parameters.step }}`}}"
-            -p reduce_box "{{`{{ workflow.parameters.reduce_box }}`}}"
+            -p step "{{`{{ workflow.parameters.step }}`}}" \
+            -p reduce_box "{{`{{ workflow.parameters.reduce_box }}`}}" \
             -p normalisation "{{`{{ workflow.parameters.normalisation }}`}}"
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
