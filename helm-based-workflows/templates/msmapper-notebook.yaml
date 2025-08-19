@@ -2,6 +2,42 @@ apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
   name: msmapper-notebook
+  labels:
+    workflows.diamond.ac.uk/science-group: magnetic-materials-group
+  annotations:
+    workflows.argoproj.io/title: Reciprocal Space Mapper
+    workflows.argoproj.io/description: |
+      Runs the msmapper program to re-map detector images
+      from i16 NeXus files into reciprocal lattice units.
+    workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.diamond.ac.uk/parameter-schema.scan_numbers: |
+      {
+        "type": "string"
+      }
+    workflows.diamond.ac.uk/parameter-schema.step: |
+      {
+        "type": "string"
+      }
+    workflows.diamond.ac.uk/parameter-schema.reduce_box: |
+      {
+        "type": "boolean"
+      }
+    workflows.diamond.ac.uk/parameter-schema.normalisation: |
+      {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "rc",
+            "title": "Ring Current",
+          },
+          {
+            "const": "ic1monitor",
+            "title": "Monitor",
+          },
+        ],
+        "default": "rc"
+      }
+
 spec:
   entrypoint: msmapper-notebook
   arguments:
