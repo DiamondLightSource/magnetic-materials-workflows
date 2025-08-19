@@ -42,7 +42,8 @@ metadata:
       }
     workflows.diamond.ac.uk/parameter-schema.file: |
       {
-        "type": "string"
+        "type": "file",
+        "default": true
       }
     workflows.diamond.ac.uk/ui-schema: |
       {
@@ -67,11 +68,6 @@ metadata:
             "type": "Control",
             "scope": "#/properties/reduce_box",
             "label": "Reduce size"
-          },
-          {
-            "type": "file",
-            "scope": "#/properties/file",
-            "label": "File"
           }
         ]
       }
