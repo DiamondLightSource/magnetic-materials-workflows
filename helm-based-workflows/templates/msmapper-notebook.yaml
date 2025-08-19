@@ -40,6 +40,10 @@ metadata:
         ],
         "default": "rc"
       }
+    workflows.diamond.ac.uk/parameter-schema.file: |
+      {
+        "type": "string"
+      }
     workflows.diamond.ac.uk/ui-schema: |
       {
         "type": "VerticalLayout",
@@ -63,6 +67,11 @@ metadata:
             "type": "Control",
             "scope": "#/properties/reduce_box",
             "label": "Reduce size"
+          },
+          {
+            "type": "file",
+            "scope": "#/properties/file",
+            "label": "File"
           }
         ]
       }
