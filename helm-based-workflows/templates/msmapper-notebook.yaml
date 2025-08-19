@@ -22,7 +22,7 @@ metadata:
       }
     workflows.diamond.ac.uk/parameter-schema.reduce_box: |
       {
-        "type": "boolean"
+        "type": "boolean",
         "default": true
       }
     workflows.diamond.ac.uk/parameter-schema.normalisation: |
