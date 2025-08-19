@@ -148,6 +148,10 @@ spec:
             path: /tmp/msmapper_result.log
             archive:
               none: {}
+          - name: msmapper-pixel-log
+            path: /tmp/msmapper_pixel.log
+            archive:
+              none: { }
           - name: msmapper-bean
             path: /tmp/tmp_remap.json
             archive:
