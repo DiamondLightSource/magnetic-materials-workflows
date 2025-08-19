@@ -28,12 +28,12 @@ metadata:
         "oneOf": [
           {
             "const": "rc",
-            "title": "Ring Current",
+            "title": "Ring Current"
           },
           {
             "const": "ic1monitor",
-            "title": "Monitor",
-          },
+            "title": "Monitor"
+          }
         ],
         "default": "rc"
       }
@@ -55,7 +55,7 @@ metadata:
             "type": "Control",
             "scope": "#/properties/reduce_box",
             "label": "Reduce size"
-          },
+          }
         ]
       }
 
