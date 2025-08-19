@@ -37,6 +37,27 @@ metadata:
         ],
         "default": "rc"
       }
+    workflows.diamond.ac.uk/ui-schema: |
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/scan_numbers",
+            "label": "Scan Numbers"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/normalisation",
+            "label": "Normalisation"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/reduce_box",
+            "label": "Reduce size"
+          },
+        ]
+      }
 
 spec:
   entrypoint: msmapper-notebook
