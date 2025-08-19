@@ -40,10 +40,16 @@ metadata:
         ],
         "default": "rc"
       }
-    workflows.diamond.ac.uk/parameter-schema.file: |
+    workflows.diamond.ac.uk/parameter-schema.uploadedFile: |
       {
-        "type": "file",
-        "default": true
+        "type": "object",
+        "properties": {
+            "uploadedFile": {
+              "type": "string",
+              "format": "data-url",
+              "title": "Upload File"
+            }
+          }
       }
     workflows.diamond.ac.uk/ui-schema: |
       {
@@ -68,6 +74,15 @@ metadata:
             "type": "Control",
             "scope": "#/properties/reduce_box",
             "label": "Reduce size"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/uploadedFile",
+            "options": {
+              "accept": ".cif,.nxs",
+              "dropZone": true,
+              "label": "Drag and drop your file here or click to upload"
+            }
           }
         ]
       }
