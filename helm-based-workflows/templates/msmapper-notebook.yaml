@@ -18,9 +18,7 @@ spec:
       - name: reduce_box
         value: true
       - name: normalisation
-        valueFrom:
-          - 'rc'
-          - 'ic1monitor'
+        value: 'rc'
   volumes:
     - name: session
       hostPath:
