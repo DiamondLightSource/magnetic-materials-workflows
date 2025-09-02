@@ -25,3 +25,7 @@ RUN mkdir -p /opt/msmapper && \
     curl -L https://alfred.diamond.ac.uk/MSMapper/master/builds-snapshot/MSMapper-1.9.0.v20250205-1441-linux.x86_64.zip -o /opt/msmapper/archive.zip && \
     unzip -n /opt/msmapper/archive.zip -d /opt/msmapper && \
     rm /opt/msmapper/archive.zip
+
+# Install mmg_toolbox module directly from the GitHub repository and clean up
+RUN pip install --no-cache-dir git+https://github.com/DanPorter/mmg_toolbox.git@a242e75458a0a15d8efc5b8101910459ed32930b#subdirectory=mmg_toolbox \
+    && rm -rf /root/.cache/pip
