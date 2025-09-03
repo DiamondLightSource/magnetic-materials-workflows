@@ -27,5 +27,5 @@ RUN mkdir -p /opt/msmapper && \
     rm /opt/msmapper/archive.zip
 
 # Install mmg_toolbox module directly from the GitHub repository and clean up
-RUN pip install --no-cache-dir git+https://github.com/DanPorter/mmg_toolbox.git@a242e75458a0a15d8efc5b8101910459ed32930b#subdirectory=mmg_toolbox \
+RUN pip install --no-cache-dir git+https://github.com/DanPorter/mmg_toolbox.git@a242e75458a0a15d8efc5b8101910459ed32930b \
     && rm -rf /root/.cache/pip

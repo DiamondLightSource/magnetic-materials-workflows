@@ -1,0 +1,28 @@
+{
+  "scan_numbers": {
+    "type": "string",
+    "default": "12345, 12346"
+  },
+  "step": {
+    "type": "string",
+    "default": "0.002"
+  },
+  "reduce_box": {
+    "type": "boolean",
+    "default": true
+  },
+  "normalisation": {
+    "type": "string",
+    "oneOf": [
+      {
+        "const": "rc",
+        "title": "Ring Current"
+      },
+      {
+        "const": "ic1monitor",
+        "title": "Monitor"
+      }
+    ],
+    "default": "rc"
+  }
+}

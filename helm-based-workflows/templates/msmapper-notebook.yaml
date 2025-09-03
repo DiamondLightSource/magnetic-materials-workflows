@@ -10,63 +10,10 @@ metadata:
       Runs the msmapper program to re-map detector images
       from i16 NeXus files into reciprocal lattice units.
     workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
-    workflows.diamond.ac.uk/parameter-schema.scan_numbers: |
-      {
-        "type": "string",
-        "default": "12345, 12346"
-      }
-    workflows.diamond.ac.uk/parameter-schema.step: |
-      {
-        "type": "string",
-        "default": "0.002"
-      }
-    workflows.diamond.ac.uk/parameter-schema.reduce_box: |
-      {
-        "type": "boolean",
-        "default": true
-      }
-    workflows.diamond.ac.uk/parameter-schema.normalisation: |
-      {
-        "type": "string",
-        "oneOf": [
-          {
-            "const": "rc",
-            "title": "Ring Current"
-          },
-          {
-            "const": "ic1monitor",
-            "title": "Monitor"
-          }
-        ],
-        "default": "rc"
-      }
+    workflows.diamond.ac.uk/parameter-schema: |
+      {{- .Files.Get "schemas/msmapper-notebook_param.json" | nindent 6 }}
     workflows.diamond.ac.uk/ui-schema: |
-      {
-        "type": "VerticalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "#/properties/scan_numbers",
-            "label": "Scan Numbers"
-          },
-          {
-            "type": "Control",
-            "scope": "#/properties/step",
-            "label": "HKL Step"
-          },
-          {
-            "type": "Control",
-            "scope": "#/properties/normalisation",
-            "label": "Normalisation"
-          },
-          {
-            "type": "Control",
-            "scope": "#/properties/reduce_box",
-            "label": "Reduce size"
-          }
-        ]
-      }
-
+      {{- .Files.Get "schemas/msmapper-notebook_ui.json" | nindent 6 }}
 spec:
   entrypoint: msmapper-notebook
   arguments:

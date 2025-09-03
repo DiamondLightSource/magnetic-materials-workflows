@@ -1,0 +1,25 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/scan_numbers",
+      "label": "Scan Numbers"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/step",
+      "label": "HKL Step"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/normalisation",
+      "label": "Normalisation"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/reduce_box",
+      "label": "Reduce size"
+    }
+  ]
+}
