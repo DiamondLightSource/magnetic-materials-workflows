@@ -27,5 +27,6 @@
       ],
       "default": "rc"
     }
-  }
+  },
+  "required": ["scan_numbers"]
 }
