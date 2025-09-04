@@ -1,0 +1,20 @@
+name: mmg_toolbox
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - matplotlib-base
+  - jupyter
+  - nbconvert
+  - papermill
+  - h5py
+  - hdf5plugin
+  - imageio
+  - scipy
+  - lmfit
+  - hdfmap
+  - nexus2srs
+  - pip
+  - pip:
+      - git+https://github.com/DanPorter/mmg_toolbox.git
