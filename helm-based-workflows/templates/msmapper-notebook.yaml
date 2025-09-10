@@ -86,6 +86,14 @@ spec:
             path: /tmp/msmapper_result.png
             archive:
               none: {}
+          - name: histogram
+            path: /tmp/msmapper_hist.png
+            archive:
+              none: {}
+          - name: voxel-image
+            path: /tmp/msmapper_voxel.png
+            archive:
+              none: {}
           - name: msmapper-log
             path: /tmp/msmapper_result.log
             archive:
