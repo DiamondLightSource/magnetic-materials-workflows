@@ -79,7 +79,7 @@ spec:
             path: /tmp/result.dat
             archive:
               none: {}
-    - name: i21-image-proc
+    - name: i21-image-processing-notebook
       dag:
         tasks:
           - name: run-i21-image-proc
