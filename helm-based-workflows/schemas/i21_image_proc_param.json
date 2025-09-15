@@ -14,8 +14,8 @@
       "default": ""
     },
     "energy_resolution": {
-      "type": "float",
-      "default": 0.006
+      "type": "string",
+      "default": "0.006"
     }
   }
 }
