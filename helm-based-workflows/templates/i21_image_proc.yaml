@@ -1,0 +1,86 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: i21-image-processing-notebook
+  labels:
+    workflows.diamond.ac.uk/science-group: magnetic-materials-group
+  annotations:
+    workflows.argoproj.io/title: I21 Image Processing
+    workflows.argoproj.io/description: |
+      Performs background subtraction and elastic line calibration on I21 data.
+    workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.diamond.ac.uk/parameter-schema: |
+      {{- .Files.Get "schemas/i21_image_proc.json" | nindent 6 }}
+    workflows.diamond.ac.uk/ui-schema: |
+      {{- .Files.Get "schemas/i21_image_proc_ui.json" | nindent 6 }}
+spec:
+  entrypoint: i21-image-processing-notebook
+  arguments:
+    parameters:
+      - name: visitdir
+        valueFrom:
+          configMapKeyRef:
+            name: sessionspaces
+            key: data_directory
+      - name: inpath
+      - name: outpath
+      - name: background
+      - name: energy_resolution
+  volumes:
+    - name: session
+      hostPath:
+        path: "{{`{{ workflow.parameters.visitdir }}`}}"
+        type: Directory
+  volumeClaimTemplates:
+    - metadata:
+        name: tmp
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: netapp
+
+  templates:
+    - name: run-i21-image-proc
+      script:
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:v0.2.1
+        command: [bash]
+        source: |
+          # mount-files
+          echo '{{ .Files.Get "notebooks/i21_Image_Processing.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+          # create matplotlib config dir
+          mkdir -p /tmp/mpl
+          export MPLCONFIGDIR=/tmp/mpl
+          # run notebook
+          python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+            -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
+            -p outpath "{{`{{ workflow.parameters.outpath }}`}}" \
+            -p dark_image_file "{{`{{ workflow.parameters.background }}`}}" \
+            -p energy_resolution "{{`{{ workflow.parameters.energy_resolution }}`}}"
+          python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+          - name: session
+            mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      outputs:
+        artifacts:
+          - name: notebook
+            path: /tmp/notebook.html
+            archive:
+              none: {}
+          - name: image
+            path: /tmp/result.png
+            archive:
+              none: {}
+          - name: data
+            path: /tmp/result.dat
+            archive:
+              none: {}
+    - name: i21-image-proc
+      dag:
+        tasks:
+          - name: run-i21-image-proc
+            template: run-i21-image-proc

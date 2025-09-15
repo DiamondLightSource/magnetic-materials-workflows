@@ -102,14 +102,6 @@ spec:
             path: /tmp/tmp_remap.json
             archive:
               none: {}
-          - name: msmapper-pixel-log
-            path: /tmp/msmapper_pixel.log
-            archive:
-              none: {}
-          - name: msmapper-pixel-bean
-            path: /tmp/msmapper_pixel.json
-            archive:
-              none: {}
     - name: msmapper-notebook
       dag:
         tasks:

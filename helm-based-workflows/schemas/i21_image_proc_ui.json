@@ -1,0 +1,25 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/inpath",
+      "label": "Scan File path"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/outpath",
+      "label": "Output path"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/background",
+      "label": "Background scan"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/energy_resolution",
+      "label": "Energy resolution [eV/pixel]"
+    }
+  ]
+}

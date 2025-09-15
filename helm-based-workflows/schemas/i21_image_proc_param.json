@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "inpath": {
+      "type": "string",
+      "default": ""
+    },
+    "outpath": {
+      "type": "string",
+      "default": ""
+    },
+    "background": {
+      "type": "string",
+      "default": ""
+    },
+    "energy_resolution": {
+      "type": "float",
+      "default": 0.006
+    }
+  }
+}
