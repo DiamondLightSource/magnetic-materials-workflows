@@ -10,7 +10,7 @@ metadata:
       Performs background subtraction and elastic line calibration on I21 data.
     workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
     workflows.diamond.ac.uk/parameter-schema: |
-      {{- .Files.Get "schemas/i21_image_proc.json" | nindent 6 }}
+      {{- .Files.Get "schemas/i21_image_proc_param.json" | nindent 6 }}
     workflows.diamond.ac.uk/ui-schema: |
       {{- .Files.Get "schemas/i21_image_proc_ui.json" | nindent 6 }}
 spec:
