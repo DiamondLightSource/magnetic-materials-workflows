@@ -59,10 +59,6 @@ spec:
           export MPLCONFIGDIR=/tmp/mpl
           # set msmapper java options
           export JAVA_TOOL_OPTIONS=-Duser.name=workflows
-          # install mmg_toolbox from github repo
-          #mkdir -p /tmp/packages
-          #export PYTHONPATH=/tmp/packages
-          #python -m pip install -t /tmp/packages --upgrade --no-cache-dir git+https://github.com/DiamondLightSource/i16_msmapper.git
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
