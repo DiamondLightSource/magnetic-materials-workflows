@@ -17,4 +17,5 @@ dependencies:
   - nexus2srs
   - pip
   - pip:
-      - git+https://github.com/DanPorter/mmg_toolbox.git
+      - mmg_toolbox
+#      - git+https://github.com/DanPorter/mmg_toolbox.git

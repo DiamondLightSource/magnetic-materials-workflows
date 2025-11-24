@@ -11,10 +11,12 @@ spec:
           configMapKeyRef:
             name: sessionspaces
             key: data_directory
-      - name: inpath
-        value: ""
-      - name: outpath
-        value: ""
+      - name: scan_numbers
+        value: "12345"
+      - name: axes
+        value: 'axes'
+      - name: signal
+        value: 'signal'
   volumes:
     - name: session
       hostPath:
@@ -33,7 +35,7 @@ spec:
   templates:
     - name: convert-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:v0.2.1
         command: [ bash ]
         source: |
           # mount-files
@@ -44,8 +46,9 @@ spec:
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
-            -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
-            -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
+            -p scan_numbers "{{`{{ workflow.parameters.scan_numbers }}`}}" \
+            -p axes "{{`{{ workflow.parameters.axes }}`}}"
+            -p signal "{{`{{ workflow.parameters.signal }}`}}"
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
@@ -60,6 +63,10 @@ spec:
               none: {}
           - name: plot
             path: /tmp/output.png
+            archive:
+              none: {}
+          - name: image
+            path: /tmp/image.png
             archive:
               none: {}
           - name: dat-file
