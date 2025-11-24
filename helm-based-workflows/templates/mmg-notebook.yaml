@@ -47,7 +47,7 @@ spec:
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
             -p scan_numbers "{{`{{ workflow.parameters.scan_numbers }}`}}" \
-            -p axes "{{`{{ workflow.parameters.axes }}`}}"
+            -p axes "{{`{{ workflow.parameters.axes }}`}}" \
             -p signal "{{`{{ workflow.parameters.signal }}`}}"
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
