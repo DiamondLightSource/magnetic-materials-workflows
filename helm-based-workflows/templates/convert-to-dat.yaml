@@ -1,0 +1,85 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: convert-to-dat
+  labels:
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
+  annotations:
+    workflows.argoproj.io/title: Convert to .dat
+    workflows.argoproj.io/description: |
+      Converts .nxs files to .dat.
+    workflows.argoproj.io/repository: |
+      "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.argoproj.io/parameter-schema: |
+      {{- .Files.Get "schemas/convert-to-dat_param.json" | nindent 6 }}
+    workflows.argoproj.io/ui-schema: |
+      {{- .Files.Get "schemas/convert-to-dat_ui.json" | nindent 6 }}
+spec:
+  entrypoint: convert-to-dat
+  arguments:
+    parameters:
+    - name: visitdir
+      valueFrom:
+        configMapKeyRef:
+          name: sessionspaces
+          key: data_directory
+  volumes:
+  - name: session
+    hostPath:
+      path: "{{`{{ workflow.parameters.visitdir }}`}}"
+      type: Directory
+  templates:
+  - name: convert-to-dat
+    inputs:
+      parameters:
+      - name: filename-formatter
+        value: "i08-1-{scan_number}.nxs"
+      - name: scan-numbers
+        value: "12345, 12346"
+      - name: dat_file
+        value: "/spool"
+      - name: all_scans
+        value: "False"
+      - name: write-tiff
+        value: "False"
+      - name: overwrite
+        value: "False"
+    script:
+      image: ghcr.io/diamondlightsource/magnetic-materials-workflows
+      volumeMounts:
+        - name: session
+          mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      command: ["python"]
+      source: |
+        import os
+        import glob
+        import numpy as np
+        from mmg_toolbox import replace_scan_number
+        from nexus2srs import nxs2dat
+
+        datadir = "{{`{{ workflow.parameters.visitdir }}`}}"
+        if not os.path.isdir(datadir):
+          raise ValueError("data directory not found")
+
+        scan_numbers_string = "{{`{{inputs.parameters.scan_numbers}}`}}"
+        dat_file = "{{`{{inputs.parameters.dat_file}}`}}"
+        write_tiff = "{{`{{inputs.parameters.write_tiff}}`}}"
+        overwrite = "{{`{{inputs.parameters.overwrite}}`}}"
+
+        base_fname = glob.glob("*.nxs")[0]
+
+        if "{{`{{inputs.parameters.overwrite}}`}}" == True:
+          scans = (os.path.join(datadir, file) for file in glob.glob("*.nxs"))
+        else if scan_numbers_string.contains("-"):
+          start, stop = scan_numbers_string.split("-")
+          scan_numbers = np.arange(int(start), int(stop) + 1)
+          scans = (os.path.join(datadir, replace_scan_number(base_fname, n)) for n in scan_numbers)
+        else:
+          scan_numbers = np.fromstring(scan_numbers_string, dtype=int, sep=',')
+          scans = (os.path.join(datadir, replace_scan_number(base_fname, n)) for n in scan_numbers)
+        
+        for scan in scans:
+          if not os.path.exists(scan):
+            raise FileNotFoundError(f"file not found: {scan}")
+          nexus2dat(scan, dat_file, write_tiff, overwrite)
+
