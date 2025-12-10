@@ -10,8 +10,32 @@ metadata:
       Converts .nxs files to .dat.
     workflows.argoproj.io/repository: |
       "https://github.com/DiamondLightSource/magnetic-materials-workflows"
-    workflows.argoproj.io/parameter-schema: |
-      {{- .Files.Get "schemas/convert-to-dat_param.json" | nindent 6 }}
+    workflows.argoproj.io/parameter-schema.scan_numbers: |
+      {
+        "type": "string",
+        "default": "12345 | 12345,12346,... | 12345-12355",
+        "pattern": "(^[0-9]+-[0-9]+$)|(^[0-9]+(, ?[0-9]+)*?$)"
+      }
+    workflows.argoproj.io/parameter-schema.all_scans: |
+      {
+        "type": "boolean",
+        "default": false
+      }
+    workflows.argoproj.io/parameter-schema.dat_file: |
+      {
+        "type": "string",
+        "default": "/spool"
+      }
+    workflows.argoproj.io/parameter-schema.write_tiff: |
+      {
+        "type": "boolean",
+        "default": false
+      }
+    workflows.argoproj.io/parameter-schema.overwrite: |
+      {
+        "type": "boolean",
+        "default": false
+      }
     workflows.argoproj.io/ui-schema: |
       {{- .Files.Get "schemas/convert-to-dat_ui.json" | nindent 6 }}
 spec:
@@ -32,10 +56,10 @@ spec:
   - name: convert-to-dat
     inputs:
       parameters:
-      - name: scan-numbers
+      - name: scan_numbers
       - name: dat_file
       - name: all_scans
-      - name: write-tiff
+      - name: write_tiff
       - name: overwrite
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows
