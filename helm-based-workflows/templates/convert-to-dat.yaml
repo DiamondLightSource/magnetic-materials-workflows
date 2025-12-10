@@ -63,29 +63,21 @@ spec:
         write_tiff = True if "{{`{{inputs.parameters.write_tiff}}`}}".lower() == "true" else False
         overwrite = True if "{{`{{inputs.parameters.overwrite}}`}}".lower() == "true" else False
 
-        print("Scan Numbers: ", scan_numbers_string)
-        print("Output Location: ", dat_file)
-        print("All Scans: ", all_scans)
-        print("Write TIFF: ", write_tiff)
-        print("Overwrite: ", overwrite)
-
         nxs_files = glob.glob(os.path.join(datadir, "*.nxs"))
         if len(nxs_files) == 0:
           raise FileNotFoundError("No .nxs files found")
         
         base_fname = nxs_files[0]
 
-        print("Base Name: ", base_fname)
-
         if all_scans:
           scans = nxs_files
-        elif scan_numbers_string.contains("-"):
+        elif "-" in scan_numbers_string:
           start, stop = scan_numbers_string.split("-")
           scan_numbers = np.arange(int(start), int(stop) + 1)
-          scans = (os.path.join(datadir, replace_scan_number(base_fname, n)) for n in scan_numbers)
+          scans = (replace_scan_number(base_fname, n) for n in scan_numbers)
         else:
           scan_numbers = np.fromstring(scan_numbers_string, dtype=int, sep=',')
-          scans = (os.path.join(datadir, replace_scan_number(base_fname, n)) for n in scan_numbers)
+          scans = (replace_scan_number(base_fname, n) for n in scan_numbers)
         
         for scan in scans:
           if not os.path.exists(scan):
