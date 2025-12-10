@@ -45,12 +45,15 @@ spec:
       command: ["python"]
       source: |
         import os
+        import re
         import glob
         import numpy as np
-        from mmg_toolbox.utils.file_functions import replace_scan_number
         from nexus2srs import nxs2dat
 
         print("Imports successful")
+
+        def replace_scan_number(filename: str, new_number: int): -> str
+          return re.sub(r"\d{3,}.nxs$", str(new_number)+".nxs", filename)
 
         datadir = "{{`{{ workflow.parameters.visitdir }}`}}"
         if not os.path.isdir(datadir):
