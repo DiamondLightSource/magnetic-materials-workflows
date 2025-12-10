@@ -80,7 +80,7 @@ spec:
 
         if all_scans:
           scans = (os.path.join(datadir, file) for file in glob.glob("*.nxs"))
-        else if scan_numbers_string.contains("-"):
+        elif scan_numbers_string.contains("-"):
           start, stop = scan_numbers_string.split("-")
           scan_numbers = np.arange(int(start), int(stop) + 1)
           scans = (os.path.join(datadir, replace_scan_number(base_fname, n)) for n in scan_numbers)
