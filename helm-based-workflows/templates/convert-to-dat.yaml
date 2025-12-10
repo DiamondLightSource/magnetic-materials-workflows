@@ -55,7 +55,7 @@ spec:
           raise ValueError("data directory not found")
 
         scan_numbers_string = "{{`{{inputs.parameters.scan_numbers}}`}}"
-        dat_file = "{{inputs.parameters.dat_file}}"
+        dat_file = "{{`{{inputs.parameters.dat_file}}`}}"
         all_scans = True if "{{`{{inputs.parameters.all_scans}}`}}".lower() == "true" else False
         write_tiff = True if "{{`{{inputs.parameters.write_tiff}}`}}".lower() == "true" else False
         overwrite = True if "{{`{{inputs.parameters.overwrite}}`}}".lower() == "true" else False
