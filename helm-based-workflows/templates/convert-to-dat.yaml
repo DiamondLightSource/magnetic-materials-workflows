@@ -52,7 +52,7 @@ spec:
 
         print("Imports successful")
 
-        def replace_scan_number(filename: str, new_number: int): -> str
+        def replace_scan_number(filename: str, new_number: int) -> str:
           return re.sub(r"\d{3,}.nxs$", str(new_number)+".nxs", filename)
 
         datadir = "{{`{{ workflow.parameters.visitdir }}`}}"
