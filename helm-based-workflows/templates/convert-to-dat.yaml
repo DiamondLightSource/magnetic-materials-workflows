@@ -54,10 +54,11 @@ spec:
         if not os.path.isdir(datadir):
           raise ValueError("data directory not found")
 
-        scan_numbers_string = "{{`{{inputs.parameters.scan_numbers}}`}}"
-        dat_file = "{{`{{inputs.parameters.dat_file}}`}}"
-        write_tiff = "{{`{{inputs.parameters.write_tiff}}`}}"
-        overwrite = "{{`{{inputs.parameters.overwrite}}`}}"
+        scan_numbers_string = "{{inputs.parameters.scan_numbers}}"
+        dat_file = "{{inputs.parameters.dat_file}}"
+        all_scans = True if "{{inputs.parameters.all_scans}}".lower() == "true" else False
+        write_tiff = True if "{{inputs.parameters.write_tiff}}".lower() == "true" else False
+        overwrite = True if "{{inputs.parameters.overwrite}}".lower() == "true" else False
 
         nxs_files = glob.glob("*.nxs")
         if len(nxs_files) == 0:
@@ -65,7 +66,7 @@ spec:
         
         base_fname = nxs_files[0]
 
-        if "{{`{{inputs.parameters.overwrite}}`}}" == True:
+        if all_scans:
           scans = (os.path.join(datadir, file) for file in glob.glob("*.nxs"))
         else if scan_numbers_string.contains("-"):
           start, stop = scan_numbers_string.split("-")
