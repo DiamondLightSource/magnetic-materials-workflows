@@ -10,32 +10,8 @@ metadata:
       Converts .nxs files to .dat.
     workflows.argoproj.io/repository: |
       "https://github.com/DiamondLightSource/magnetic-materials-workflows"
-    workflows.argoproj.io/parameter-schema.scan_numbers: |
-      {
-        "type": "string",
-        "default": "12345 | 12345,12346,... | 12345-12355",
-        "pattern": "(^[0-9]+-[0-9]+$)|(^[0-9]+(, ?[0-9]+)*?$)"
-      }
-    workflows.argoproj.io/parameter-schema.all_scans: |
-      {
-        "type": "boolean",
-        "default": false
-      }
-    workflows.argoproj.io/parameter-schema.dat_file: |
-      {
-        "type": "string",
-        "default": "/spool"
-      }
-    workflows.argoproj.io/parameter-schema.write_tiff: |
-      {
-        "type": "boolean",
-        "default": false
-      }
-    workflows.argoproj.io/parameter-schema.overwrite: |
-      {
-        "type": "boolean",
-        "default": false
-      }
+    workflows.argoproj.io/parameter-schema: |
+      {{- .Files.Get "schemas/convert-to-dat_param.json" | nindent 6 }}
     workflows.argoproj.io/ui-schema: |
       {{- .Files.Get "schemas/convert-to-dat_ui.json" | nindent 6 }}
 spec:
@@ -88,7 +64,11 @@ spec:
         write_tiff = "{{`{{inputs.parameters.write_tiff}}`}}"
         overwrite = "{{`{{inputs.parameters.overwrite}}`}}"
 
-        base_fname = glob.glob("*.nxs")[0]
+        nxs_files = glob.glob("*.nxs")
+        if len(nxs_files) == 0:
+          raise FileNotFoundError("No .nxs files found")
+        
+        base_fname = nxs_files[0]
 
         if "{{`{{inputs.parameters.overwrite}}`}}" == True:
           scans = (os.path.join(datadir, file) for file in glob.glob("*.nxs"))
