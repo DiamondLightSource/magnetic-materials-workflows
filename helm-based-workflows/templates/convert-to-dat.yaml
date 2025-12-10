@@ -10,9 +10,9 @@ metadata:
       Converts .nxs files to .dat.
     workflows.argoproj.io/repository: |
       "https://github.com/DiamondLightSource/magnetic-materials-workflows"
-    workflows.argoproj.io/parameter-schema: |
+    workflows.diamond.ac.uk/parameter-schema: |
       {{- .Files.Get "schemas/convert-to-dat_param.json" | nindent 6 }}
-    workflows.argoproj.io/ui-schema: |
+    workflows.diamond.ac.uk/ui-schema: |
       {{- .Files.Get "schemas/convert-to-dat_ui.json" | nindent 6 }}
 spec:
   entrypoint: convert-to-dat
@@ -33,15 +33,10 @@ spec:
     inputs:
       parameters:
       - name: scan_numbers
-        value: "12345 | 12345,12346,... | 12345-12355"
       - name: dat_file
-        value: "/spool"
       - name: all_scans
-        value: false
       - name: write_tiff
-        value: false
       - name: overwrite
-        value: false
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows
       volumeMounts:

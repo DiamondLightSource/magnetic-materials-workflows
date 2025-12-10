@@ -2,40 +2,34 @@
   "type": "VerticalLayout",
   "elements": [
     {
-      "type": "Group",
-      "label": "",
+      "type": "HorizontalLayout",
       "elements": [
         {
-          "type": "HorizontalLayout",
-          "elements": [
-            {
-              "type": "Control",
-              "scope": "#/properties/scan_numbers",
-              "label": "Scan Numbers"
-            },
-            {
-              "type": "Control",
-              "scope": "#/properties/all_scans",
-              "label": "All Scans"
-            }
-          ]
+          "type": "Control",
+          "scope": "#/properties/scan_numbers",
+          "label": "Scan Numbers"
         },
         {
           "type": "Control",
-          "scope": "#/properties/dat_file",
-          "label": "Output Path"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/write_tiff",
-          "label": "Write TIFF"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/overwrite",
-          "label": "Overwrite Files"
+          "scope": "#/properties/all_scans",
+          "label": "All Scans"
         }
       ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/dat_file",
+      "label": "Output Path"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/write_tiff",
+      "label": "Write TIFF"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/overwrite",
+      "label": "Overwrite Files"
     }
   ]
 }
