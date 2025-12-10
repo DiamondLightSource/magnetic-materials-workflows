@@ -50,9 +50,13 @@ spec:
         from mmg_toolbox import replace_scan_number
         from nexus2srs import nxs2dat
 
+        print("Imports successful")
+
         datadir = "{{`{{ workflow.parameters.visitdir }}`}}"
         if not os.path.isdir(datadir):
           raise ValueError("data directory not found")
+
+        print(datadir)
 
         scan_numbers_string = "{{`{{inputs.parameters.scan_numbers}}`}}"
         dat_file = "{{`{{inputs.parameters.dat_file}}`}}"
@@ -60,11 +64,19 @@ spec:
         write_tiff = True if "{{`{{inputs.parameters.write_tiff}}`}}".lower() == "true" else False
         overwrite = True if "{{`{{inputs.parameters.overwrite}}`}}".lower() == "true" else False
 
+        print("Scan Numbers: ", scan_numbers_string)
+        print("Output Location: ", dat_file)
+        print("All Scans: ", all_scans)
+        print("Write TIFF: ", write_tiff)
+        print("Overwrite: ", overwrite)
+
         nxs_files = glob.glob("*.nxs")
         if len(nxs_files) == 0:
           raise FileNotFoundError("No .nxs files found")
         
         base_fname = nxs_files[0]
+
+        print("Base Name: ", base_fname)
 
         if all_scans:
           scans = (os.path.join(datadir, file) for file in glob.glob("*.nxs"))
