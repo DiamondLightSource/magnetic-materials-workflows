@@ -57,10 +57,15 @@ spec:
     inputs:
       parameters:
       - name: scan_numbers
+        value: "12345 | 12345,12346,... | 12345-12355"
       - name: dat_file
+        value: "/spool"
       - name: all_scans
+        value: false
       - name: write_tiff
+        value: false
       - name: overwrite
+        value: false
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows
       volumeMounts:
