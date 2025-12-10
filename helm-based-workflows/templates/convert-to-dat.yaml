@@ -32,18 +32,11 @@ spec:
   - name: convert-to-dat
     inputs:
       parameters:
-      - name: filename-formatter
-        value: "i08-1-{scan_number}.nxs"
       - name: scan-numbers
-        value: "12345, 12346"
       - name: dat_file
-        value: "/spool"
       - name: all_scans
-        value: "False"
       - name: write-tiff
-        value: "False"
       - name: overwrite
-        value: "False"
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows
       volumeMounts:
