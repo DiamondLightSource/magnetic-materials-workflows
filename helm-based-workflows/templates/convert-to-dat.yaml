@@ -50,16 +50,12 @@ spec:
         import numpy as np
         from nexus2srs import nxs2dat
 
-        print("Imports successful")
-
         def replace_scan_number(filename: str, new_number: int) -> str:
           return re.sub(r"\d{3,}.nxs$", str(new_number)+".nxs", filename)
 
         datadir = "{{`{{ workflow.parameters.visitdir }}`}}"
         if not os.path.isdir(datadir):
           raise ValueError("data directory not found")
-
-        print(datadir)
 
         scan_numbers_string = "{{`{{inputs.parameters.scan_numbers}}`}}"
         dat_file = "{{`{{inputs.parameters.dat_file}}`}}"
@@ -73,7 +69,7 @@ spec:
         print("Write TIFF: ", write_tiff)
         print("Overwrite: ", overwrite)
 
-        nxs_files = glob.glob("*.nxs")
+        nxs_files = glob.glob(os.path.join(datadir, "*.nxs"))
         if len(nxs_files) == 0:
           raise FileNotFoundError("No .nxs files found")
         
@@ -82,7 +78,7 @@ spec:
         print("Base Name: ", base_fname)
 
         if all_scans:
-          scans = (os.path.join(datadir, file) for file in glob.glob("*.nxs"))
+          scans = nxs_files
         elif scan_numbers_string.contains("-"):
           start, stop = scan_numbers_string.split("-")
           scan_numbers = np.arange(int(start), int(stop) + 1)
