@@ -47,7 +47,7 @@ spec:
         import os
         import glob
         import numpy as np
-        from mmg_toolbox import replace_scan_number
+        from mmg_toolbox.utils.file_functions import replace_scan_number
         from nexus2srs import nxs2dat
 
         print("Imports successful")
