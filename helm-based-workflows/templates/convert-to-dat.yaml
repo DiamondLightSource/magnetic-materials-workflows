@@ -82,5 +82,5 @@ spec:
         for scan in scans:
           if not os.path.exists(scan):
             raise FileNotFoundError(f"file not found: {scan}")
-          nexus2dat(scan, dat_file, write_tiff, overwrite)
+          nexs2dat(scan, dat_file, write_tiff, overwrite)
 
