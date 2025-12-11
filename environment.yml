@@ -14,8 +14,7 @@ dependencies:
   - scipy
   - lmfit
   - hdfmap
-  - nexus2srs
   - pip
   - pip:
+      - nexus2srs
       - mmg_toolbox
-#      - git+https://github.com/DanPorter/mmg_toolbox.git
