@@ -58,11 +58,16 @@ spec:
           raise ValueError("data directory not found")
 
         scan_numbers_string = "{{`{{inputs.parameters.scan_numbers}}`}}"
-        dat_file = os.path.join(datadir,"{{`{{inputs.parameters.dat_file}}`}}")
+        dat_file = "{{`{{inputs.parameters.dat_file}}`}}"
         all_scans = True if "{{`{{inputs.parameters.all_scans}}`}}".lower() == "true" else False
         write_tiff = True if "{{`{{inputs.parameters.write_tiff}}`}}".lower() == "true" else False
         overwrite = True if "{{`{{inputs.parameters.overwrite}}`}}".lower() == "true" else False
 
+        if dat_file.startswith('/'):
+          outpath = os.path.join(datadir, dat_file[1:])
+        else:
+          outpath = os.path.join(datadir, dat_file)
+        
         nxs_files = glob.glob(os.path.join(datadir, "*.nxs"))
         if len(nxs_files) == 0:
           raise FileNotFoundError("No .nxs files found")
@@ -82,5 +87,5 @@ spec:
         for scan in scans:
           if not os.path.exists(scan):
             raise FileNotFoundError(f"file not found: {scan}")
-          nxs2dat(scan, dat_file, write_tiff, overwrite)
+          nxs2dat(scan, outpath, write_tiff, overwrite)
 
