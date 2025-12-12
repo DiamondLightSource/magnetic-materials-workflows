@@ -5,9 +5,9 @@ metadata:
   labels:
     workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
   annotations:
-    workflows.argoproj.io/title: Convert to .dat
+    workflows.argoproj.io/title: Convert .nxs to .dat
     workflows.argoproj.io/description: |
-      Converts .nxs files to .dat.
+      Does what it says on the tin.
     workflows.argoproj.io/repository: |
       "https://github.com/DiamondLightSource/magnetic-materials-workflows"
     workflows.diamond.ac.uk/parameter-schema: |
@@ -15,7 +15,7 @@ metadata:
     workflows.diamond.ac.uk/ui-schema: |
       {{- .Files.Get "schemas/convert-to-dat_ui.json" | nindent 6 }}
 spec:
-  entrypoint: convert-to-dat
+  entrypoint: workflow-entry
   arguments:
     parameters:
     - name: visitdir
@@ -28,6 +28,15 @@ spec:
     hostPath:
       path: "{{`{{ workflow.parameters.visitdir }}`}}"
       type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: tmp
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+        storageClassName: netapp
   templates:
   - name: convert-to-dat
     inputs:
@@ -40,52 +49,31 @@ spec:
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows
       volumeMounts:
-        - name: session
-          mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
-      command: ["python"]
+      - name: tmp
+        mountPath: /tmp
+      - name: session
+        mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      command: [bash]
       source: |
-        import os
-        import re
-        import glob
-        import numpy as np
-        from nexus2srs import nxs2dat
-
-        def replace_scan_number(filename: str, new_number: int) -> str:
-          return re.sub(r"\d{3,}.nxs$", str(new_number)+".nxs", filename)
-
-        datadir = "{{`{{ workflow.parameters.visitdir }}`}}"
-        if not os.path.isdir(datadir):
-          raise ValueError("data directory not found")
-
-        scan_numbers_string = "{{`{{inputs.parameters.scan_numbers}}`}}"
-        dat_file = "{{`{{inputs.parameters.dat_file}}`}}"
-        all_scans = True if "{{`{{inputs.parameters.all_scans}}`}}".lower() == "true" else False
-        write_tiff = True if "{{`{{inputs.parameters.write_tiff}}`}}".lower() == "true" else False
-        overwrite = True if "{{`{{inputs.parameters.overwrite}}`}}".lower() == "true" else False
-
-        if dat_file.startswith('/'):
-          outpath = os.path.join(datadir, dat_file[1:])
-        else:
-          outpath = os.path.join(datadir, dat_file)
-        
-        nxs_files = glob.glob(os.path.join(datadir, "*.nxs"))
-        if len(nxs_files) == 0:
-          raise FileNotFoundError("No .nxs files found")
-        
-        base_fname = nxs_files[0]
-
-        if all_scans:
-          scans = nxs_files
-        elif "-" in scan_numbers_string:
-          start, stop = scan_numbers_string.split("-")
-          scan_numbers = np.arange(int(start), int(stop) + 1)
-          scans = (replace_scan_number(base_fname, n) for n in scan_numbers)
-        else:
-          scan_numbers = np.fromstring(scan_numbers_string, dtype=int, sep=',')
-          scans = (replace_scan_number(base_fname, n) for n in scan_numbers)
-        
-        for scan in scans:
-          if not os.path.exists(scan):
-            raise FileNotFoundError(f"file not found: {scan}")
-          nxs2dat(scan, outpath, write_tiff, overwrite)
-
+        # mount-files
+        echo '{{ .Files.Get "notebooks/convert_to_dat.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+        # run notebook
+        python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+          -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+          -p scan_numbers_string "{{`{{ inputs.parameters.scan_numbers }}`}}" \
+          -p dat_file "{{`{{ inputs.parameters.dat_file }}`}}" \
+          -p all_scans "{{`{{ inputs.parameters.all_scans }}`}}" \
+          -p write_tiff "{{`{{ inputs.parameters.write_tiff }}`}}" \
+          -p overwrite "{{`{{ inputs.parameters.overwrite }}`}}"
+        python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+    outputs:
+      artifacts:
+      - name: notebook
+        path: /tmp/notebook.html
+        archive:
+          none: {}
+  - name: workflow-entry
+    dag:
+      tasks:
+      - name: convert-to-dat
+        template: convert-to-dat
