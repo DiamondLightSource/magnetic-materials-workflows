@@ -1,0 +1,79 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: convert-to-dat
+  labels:
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
+  annotations:
+    workflows.argoproj.io/title: Convert .nxs to .dat
+    workflows.argoproj.io/description: |
+      Currently for integration testing only!
+    workflows.argoproj.io/repository: |
+      "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    # workflows.diamond.ac.uk/parameter-schema: |
+      
+    # workflows.diamond.ac.uk/ui-schema: |
+spec:
+  entrypoint: workflow-entry
+  arguments:
+    parameters:
+    - name: visitdir
+      valueFrom:
+        configMapKeyRef:
+          name: sessionspaces
+          key: data_directory
+  volumes:
+  - name: session
+    hostPath:
+      path: "{{`{{ workflow.parameters.visitdir }}`}}"
+      type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: tmp
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+        storageClassName: netapp
+  templates:
+  - name: convert-to-dat
+    inputs:
+      parameters:
+      - name: scan_numbers
+      - name: dat_file
+      - name: all_scans
+      - name: write_tiff
+      - name: overwrite
+    script:
+      image: ghcr.io/diamondlightsource/magnetic-materials-workflows
+      volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+      - name: session
+        mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      command: [bash]
+      source: |
+        # mount-files
+        echo '{{ .Files.Get "notebooks/convert_to_dat.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+        # run notebook
+        python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+          -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+          -p scan_numbers_string "{{`{{ inputs.parameters.scan_numbers }}`}}" \
+          -p dat_file "{{`{{ inputs.parameters.dat_file }}`}}" \
+          -p all_scans "{{`{{ inputs.parameters.all_scans }}`}}" \
+          -p write_tiff "{{`{{ inputs.parameters.write_tiff }}`}}" \
+          -p overwrite "{{`{{ inputs.parameters.overwrite }}`}}"
+        python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+    outputs:
+      artifacts:
+      - name: notebook
+        path: /tmp/notebook.html
+        archive:
+          none: {}
+  - name: workflow-entry
+    dag:
+      tasks:
+      - name: convert-to-dat
+        template: convert-to-dat
+        
