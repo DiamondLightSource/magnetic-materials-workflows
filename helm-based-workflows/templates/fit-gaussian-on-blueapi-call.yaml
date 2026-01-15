@@ -1,0 +1,73 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: fit-gaussian-on-blueapi-call
+  labels:
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
+  annotations:
+    workflows.argoproj.io/title: Fit Gaussian on blueapi call
+    workflows.argoproj.io/description: |
+      Fits a Gaussian function to some test data upon receiving a message from blueapi.
+    workflows.argoproj.io/repository: |
+      "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+spec:
+  entrypoint: workflow-entry
+  arguments:
+    parameters:
+    - name: visitdir
+      valueFrom:
+        configMapKeyRef:
+          name: sessionspaces
+          key: data_directory
+  volumes:
+  - name: session
+    hostPath:
+      path: "{{`{{ workflow.parameters.visitdir }}`}}"
+      type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: tmp
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+        storageClassName: netapp
+  templates:
+  - name: fit-gaussian-on-blueapi-call
+    inputs:
+      parameters:
+      - name: scan_numbers
+      - name: dat_file
+      - name: all_scans
+      - name: write_tiff
+      - name: overwrite
+    script:
+      image: docker.io/library/python:bookworm
+      volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+      - name: session
+        mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      command: [bash]
+      source: |
+        # mount-files
+        echo '{{ .Files.Get "notebooks/fit_gaussian.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+        echo '{{ .Files.Get "notebooks/test_requirements.txt" | b64enc }}' | base64 -d > /tmp/requirements.txt
+        # run notebook
+        python -m env /tmp/venv
+        /tmp/venv/bin/pip install -r /tmp/requirements.txt
+        /tmp/venv/bin/python -m ipykernel install --prefix=/tmp/venv --name=venv
+        /tmp/venv/bin/python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb
+        /tmp/venv/bin/python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+    outputs:
+      artifacts:
+      - name: notebook
+        path: /tmp/notebook.html
+        archive:
+          none: {}
+  - name: workflow-entry
+    dag:
+      tasks:
+      - name: fit-gaussian-on-blueapi-call
+        template: fit-gaussian-on-blueapi-call
