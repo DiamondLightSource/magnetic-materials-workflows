@@ -1,6 +1,5 @@
 name: Publish MSMapper Docker image to GitHub Packages
 on:
-  push:
   release:
     types: [published]
 env:

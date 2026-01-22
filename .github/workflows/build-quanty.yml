@@ -1,10 +1,10 @@
 
 name: Publish Quanty Docker image to GitHub Packages
 
-on:
-  push:
-  release:
-    types: [published]
+on: {}
+#  push:
+#  release:
+#    types: [published]
 
 permissions:
   contents: read
@@ -43,16 +43,17 @@ jobs:
           Q_USER: ${{ secrets.QUANTY_USERNAME }}
           Q_PASS: ${{ secrets.QUANTY_PASSWORD }}
         run: |
-          set -euo pipefail
+          set -eu
 
-          # 1) Login to DokuWiki (creates session cookie)
+          # 1) Login (sets session cookie)
           curl -sS -c quanty_cookies.txt \
             "https://www.quanty.org/doku.php?id=download&u=${Q_USER}&p=${Q_PASS}&r=1" \
             -o /dev/null
 
-          # 2) Fetch the Download area (links now visible because we're authenticated)
+          # 2) Fetch downloads page (authenticated)
           curl -sS -b quanty_cookies.txt -L "https://www.quanty.org/download" -o download.html
 
+          # 3) Extract Linux link from anchor text (record separator per <a>)
           URL=$(
             awk '
               BEGIN{ IGNORECASE=1; RS="</a>"; ORS="" }
@@ -61,25 +62,34 @@ jobs:
               }
             ' download.html
           )
-          
-          if [ -z "${URL}" ]; then
-           echo "Could not locate the Linux download link on the page."
-           exit 1
-          fi
-          echo "Resolved Linux URL: ${URL}"
-          
-          BASE="https://www.quanty.org"
-          if [[ "$URL" =~ ^/ ]]; then
-            URL="${BASE}${URL}"
-          fi
-          echo "Linux download URL: $URL"
 
-          # 4) Download the ZIP (this ZIP contains a single executable named 'Quanty')
+          if [ -z "${URL}" ]; then
+            echo "Could not locate the Linux download link in download.html"
+            exit 1
+          fi
+
+          # 4) Normalize to absolute URL if it starts with '/'
+          BASE="https://www.quanty.org"
+          case "$URL" in
+            /*) URL="${BASE}${URL}" ;;
+          esac
+          echo "Resolved Linux URL: ${URL}"
+
+          # 5) Download the ZIP using the authenticated cookie
           curl -L -b quanty_cookies.txt -o quanty-linux.zip "${URL}"
 
-          # Sanity info (no secrets)
-          file quanty-linux.zip || true
-          ls -l quanty-linux.zip
+          # 6) Validate: must be a ZIP (fast fail if HTML or empty)
+          if ! file quanty-linux.zip | grep -qi 'zip archive'; then
+            echo "Downloaded file is not a ZIP:"
+            file quanty-linux.zip || true
+            echo "First lines for debugging:"
+            head -n 50 quanty-linux.zip || true
+            exit 1
+          fi
+
+          # Extra robustness: test zip integrity
+          unzip -t quanty-linux.zip
+      
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
