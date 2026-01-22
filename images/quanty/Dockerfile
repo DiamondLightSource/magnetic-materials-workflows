@@ -13,7 +13,7 @@ RUN conda env create -f environment.yml && \
 RUN /venv/bin/conda-unpack
 
 # ---- Minimal runtime image ----
-FROM debian:buster AS runtime
+FROM debian:bookworm AS runtime
 
 # Bring in only the ready-to-use Python env
 COPY --from=build /venv /venv
