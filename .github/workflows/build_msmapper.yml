@@ -1,4 +1,4 @@
-name: Publish Docker image to GitHub Packages
+name: Publish MSMapper Docker image to GitHub Packages
 on:
   push:
   release:
@@ -29,7 +29,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.8.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE }}/msmapper
 
       - name: Build and push Docker image
         id: push

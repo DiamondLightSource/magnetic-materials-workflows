@@ -1,5 +1,5 @@
 
-name: Publish Quanty image to GitHub Packages
+name: Publish Quanty Docker image to GitHub Packages
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
       - name: Install helpers
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl awk
+          sudo apt-get install -y curl
 
       # --- Authenticated download of Quanty Linux ZIP ---
       # Rationale:
