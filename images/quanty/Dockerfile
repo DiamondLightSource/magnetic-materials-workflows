@@ -34,7 +34,7 @@ RUN apt-get update && \
 # We expect the Linux download to be a .zip containing a single file named "Quanty".
 # Quanty is distributed as a precompiled binary; installation is simply copying it into PATH. [3](https://www.quanty.org/documentation/getting_started)[4](https://www.quanty.org/documentation/install)
 RUN --mount=type=secret,id=quanty_zip \
-    set -euo pipefail; \
+    set -eu; \
     Z="/run/secrets/quanty_zip"; \
     mkdir -p /tmp/quanty && \
     unzip -q "$Z" -d /tmp/quanty && \
