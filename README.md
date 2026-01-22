@@ -24,7 +24,7 @@ Contains a Docker image that includes:
 
 At DLS, the image can be run using, for example:
 ```bash
-podman run -it ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1 /bin/bash
+podman run -it ghcr.io/diamondlightsource/magnetic-materials-workflows /bin/bash
 ```
 
-To update the Docker image, make changes to [Dockerfile](Dockerfile) and create a new release.
+To update the Docker image, make changes to the base [Dockerfile](images/base/Dockerfile) and create a new release.
