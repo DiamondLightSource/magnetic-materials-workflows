@@ -1,0 +1,94 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: list-and-plot
+  labels:
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
+  annotations:
+    workflows.argoproj.io/title: List and Plot
+    workflows.argoproj.io/description: |
+      Lists and plots all of the scans within a given directory.
+    workflows.diamond.ac.uk/repository: |
+      "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.diamond.ac.uk/parameter-schema: |
+      {{- .Files.Get "schemas/msmapper-notebook_param.json" | nindent 6 }}
+    workflows.diamond.ac.uk/ui-schema: |
+      {{- .Files.Get "schemas/msmapper-notebook_ui.json" | nindent 6 }}
+spec:
+  entrypoint: workflow-entry
+  arguments:
+    parameters:
+    - name: visitdir
+      valueFrom:
+        configMapKeyRef:
+          name: sessionspaces
+          key: data_directory
+  volumes:
+  - name: session
+    hostPath:
+      path: "{{`{{ workflow.parameters.visitdir }}`}}"
+      type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: tmp
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+        storageClassName: netapp
+  templates:
+  - name: list-and-plot
+    inputs:
+      parameters:
+      - name: scan_numbers
+      - name: all_scans
+      - name: print_start_time
+      - name: print_cmd
+      - name: print_temp
+      - name: print_energy
+      - name: print_sx
+      - name: print_sy
+      - name: print_sz
+      - name: other_vars
+    script:
+      image: ghcr.io/diamondlightsource/magnetic-materials-workflows
+      volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+      - name: session
+        mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      command: [bash]
+      source: |
+        # mount-files
+        echo '{{ .Files.Get "notebooks/list_and_plot.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+        # run notebook
+        python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+          -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+          -p scan_numbers_string "{{`{{ inputs.parameters.scan_numbers }}`}}" \
+          -p all_scans "{{`{{ inputs.parameters.all_scans }}`}}" \
+          -p print_start_time "{{`{{ inputs.parameters.print_start_time }}`}}" \
+          -p print_cmd "{{`{{ inputs.parameters.print_cmd }}`}}" \
+          -p print_temp "{{`{{ inputs.parameters.print_temp }}`}}" \
+          -p print_energy "{{`{{ inputs.parameters.print_energy}}`}}" \
+          -p print_sx "{{`{{ inputs.parameters.print_sx }}`}}" \
+          -p print_sy "{{`{{ inputs.parameters.print_sy }}`}}" \
+          -p print_sz "{{`{{ inputs.parameters.print_sz }}`}}" \
+          -p other_vars "{{`{{ inputs.parameters.other_vars }}`}}"
+        python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+    outputs:
+      artifacts:
+      - name: notebook
+        path: /tmp/notebook.html
+        archive:
+          none: {}
+      - name: output_file
+        path: /tmp/output_file.html
+        archive:
+          none: {}
+  - name: workflow-entry
+    dag:
+      tasks:
+      - name: list-and-plot
+        template: list-and-plot
+        

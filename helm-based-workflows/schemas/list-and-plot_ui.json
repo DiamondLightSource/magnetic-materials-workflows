@@ -1,0 +1,72 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Group",
+      "label": "Input Files",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/scan_numbers",
+              "label": "Scan Numbers"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/all_scans",
+              "label": "All Scans"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Metadata to Print",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/print_start_time",
+          "label": "Start Time"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/print_cmd",
+          "label": "Command"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/print_temp",
+          "label": "Temperature"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/print_energy",
+          "label": "Energy"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/print_sx",
+          "label": "Sample X Position"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/print_sy",
+          "label": "Sample Y Position"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/print_sz",
+          "label": "Sample Z Position"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/other_vars",
+          "label": "Other Variables"
+        }
+      ]
+    }
+  ]
+}
