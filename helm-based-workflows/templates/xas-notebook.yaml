@@ -77,7 +77,7 @@ spec:
             -p edge_label "{{`{{ workflow.parameters.edge_label }}`}}" \
             -p n_holes "{{`{{ workflow.parameters.n_holes }}`}}"
           # convert notebook to html
-          python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+          python -m nbconvert --allow-errors --to html --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
             mountPath: /tmp
