@@ -17,28 +17,33 @@
       "label": "Background",
       "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/background_subtraction",
-          "label": "Background subtraction option"
-        },
-        {
-          "type": "HorizontalLayout",
-          "label": "Background Parameters",
+          "type": "VerticalLayout",
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/background_ev_from_start",
-              "label": "Background parameter"
+              "scope": "#/properties/background_subtraction",
+              "label": "Background subtraction option"
             },
             {
-              "type": "Control",
-              "scope": "#/properties/background_ev_from_end",
-              "label": "Background parameter"
-            },
-            {
-              "type": "Control",
-              "scope": "#/properties/peak_width_ev",
-              "label": "Background parameter"
+              "type": "HorizontalLayout",
+              "label": "Background Parameters",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/background_ev_from_start",
+                  "label": "flat region eV from start"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/background_ev_from_end",
+                  "label": "flat region eV from end"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/peak_width_ev",
+                  "label": "absorption peak width in eV"
+                }
+              ]
             }
           ]
         }

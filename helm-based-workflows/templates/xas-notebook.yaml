@@ -57,7 +57,7 @@ spec:
   templates:
     - name: run-xas-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:latest
         command: [bash]
         source: |
           # mount files
@@ -75,7 +75,7 @@ spec:
             -p peak_width_ev "{{`{{ workflow.parameters.peak_width_ev }}`}}" \
             -p sample_name "{{`{{ workflow.parameters.sample_name }}`}}" \
             -p edge_label "{{`{{ workflow.parameters.edge_label }}`}}" \
-            -p n_holes "{{`{{ workflow.parameters.n_holes }}`}}" \
+            -p n_holes "{{`{{ workflow.parameters.n_holes }}`}}"
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
