@@ -47,13 +47,16 @@
       "type": "number",
       "default": 5
     },
+    "peak_width_ev": {
+      "type": "number",
+      "default": 5
+    },
     "sample_name": {
       "type": "string",
       "default": "none"
     },
     "edge_label": {
       "type": "string",
-      "default": "none",
       "onOf": [
         {
           "const": "none",
@@ -71,7 +74,8 @@
           "const": "Mn L3, L2",
           "title": "Manganese L edge"
         }
-      ]
+      ],
+      "default": "Automatic edge determination"
     },
     "n_holes": {
       "type": "number",

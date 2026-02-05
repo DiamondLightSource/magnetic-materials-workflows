@@ -2,54 +2,71 @@
   "type": "VerticalLayout",
   "elements": [
     {
-      "type": "Control",
-      "scope": "#/properties/scan_numbers_str",
-      "label": "Scan Numbers"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/background_subtraction",
-      "label": "Background subtraction option"
-    },
-    {
-      "type": "HorizontalLayout",
-      "label": "Background Parameters",
+      "type": "Group",
+      "label": "Scan Numbers",
       "elements": [
         {
           "type": "Control",
-          "scope": "#/properties/background_ev_from_start",
-          "label": "Background parameter"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/background_ev_from_end",
-          "label": "Background parameter"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/peak_width_ev",
-          "label": "Background parameter"
+          "scope": "#/properties/scan_numbers_str",
+          "label": "Scan Numbers"
         }
       ]
     },
     {
-      "type": "HorizontalLayout",
-      "label": "Metadata",
+      "type": "Group",
+      "label": "Background",
       "elements": [
         {
           "type": "Control",
-          "scope": "#/properties/sample_name",
-          "label": "Sample name"
+          "scope": "#/properties/background_subtraction",
+          "label": "Background subtraction option"
         },
         {
-          "type": "Control",
-          "scope": "#/properties/edge_label",
-          "label": "Absorption edge"
-        },
+          "type": "HorizontalLayout",
+          "label": "Background Parameters",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/background_ev_from_start",
+              "label": "Background parameter"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/background_ev_from_end",
+              "label": "Background parameter"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/peak_width_ev",
+              "label": "Background parameter"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Metadata",
+      "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/n_holes",
-          "label": "Number of holes for element Sum Rules analysis"
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/sample_name",
+              "label": "Sample name"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/edge_label",
+              "label": "Absorption edge"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/n_holes",
+              "label": "Number of holes for element Sum Rules analysis"
+            }
+          ]
         }
       ]
     }
