@@ -3,7 +3,7 @@ kind: ClusterWorkflowTemplate
 metadata:
   name: i21-image-processing-notebook
   labels:
-    workflows.diamond.ac.uk/science-group: magnetic-materials-group
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
   annotations:
     workflows.argoproj.io/title: I21 Image Processing
     workflows.argoproj.io/description: |
