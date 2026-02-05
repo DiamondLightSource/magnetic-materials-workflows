@@ -57,7 +57,7 @@
     },
     "edge_label": {
       "type": "string",
-      "onOf": [
+      "oneOf": [
         {
           "const": "none",
           "title": "Automatic edge determination"
