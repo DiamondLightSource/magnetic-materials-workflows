@@ -3,7 +3,7 @@ kind: ClusterWorkflowTemplate
 metadata:
   name: msmapper-notebook
   labels:
-    workflows.diamond.ac.uk/science-group: magnetic-materials-group
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
   annotations:
     workflows.argoproj.io/title: Reciprocal Space Mapper
     workflows.argoproj.io/description: |
