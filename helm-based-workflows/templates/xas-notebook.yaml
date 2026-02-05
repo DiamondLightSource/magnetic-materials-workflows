@@ -2,6 +2,17 @@ apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
   name: xas-notebook
+  labels:
+    workflows.diamond.ac.uk/science-group: magnetic-materials-group
+  annotations:
+    workflows.argoproj.io/title: XAS, XMCD & XMLD Analysis
+    workflows.argoproj.io/description: |
+      Runs a jupyter notebook that loads scans, reads the metadata and analyses XAS spectra.
+    workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.diamond.ac.uk/parameter-schema: |
+      {{- .Files.Get "schemas/xas-notebook_param.json" | nindent 6 }}
+    workflows.diamond.ac.uk/ui-schema: |
+      {{- .Files.Get "schemas/xas-notebook_ui.json" | nindent 6 }}
 spec:
   entrypoint: xas-notebook
   arguments:
@@ -11,10 +22,23 @@ spec:
           configMapKeyRef:
             name: sessionspaces
             key: data_directory
-      - name: inpath
+      - name: scan_numbers_str
+        value: "12345, 12346"
+      - name: background_subtraction
         value: ""
-      - name: outpath
-        value: ""
+      - name: background_ev_from_start
+        value: "5"
+      - name: background_ev_from_end
+        value: "5"
+      - name: peak_width_ev
+        value: "5"
+      - name: sample_name
+        value: 'none'
+      - name: edge_label
+        value: 'none'
+      - name: n_holes
+        value: "1"
+
   volumes:
     - name: session
       hostPath:
@@ -29,41 +53,29 @@ spec:
           requests:
             storage: 1Gi
         storageClassName: netapp
-    - metadata:
-        name: tmpdir
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: netapp
 
   templates:
-    - name: mount-files
+    - name: run-xas-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows
         command: [bash]
         source: |
+          # mount files
           echo '{{ .Files.Get "notebooks/xas_notebook.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
-        volumeMounts:
-          - name: tmp
-            mountPath: /tmp
-    - name: convert-notebook
-      script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1
-        command: [bash]
-        source: |
           # create matplotlib config dir
           mkdir -p /tmp/mpl
           export MPLCONFIGDIR=/tmp/mpl
-          # install mmg_toolbox from github repo
-          mkdir -p /tmp/packages
-          export PYTHONPATH=/tmp/packages
-          python -m pip install -t /tmp/packages --upgrade --no-cache-dir git+https://github.com/DanPorter/mmg_toolbox.git
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
-            -p inpath "{{`{{ workflow.parameters.inpath }}`}}" \
-            -p outpath "{{`{{ workflow.parameters.outpath }}`}}"
+            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+            -p scan_numbers_str "{{`{{ workflow.parameters.scan_numbers_str }}`}}" \
+            -p background_subtraction "{{`{{ workflow.parameters.background_subtraction }}`}}" \
+            -p background_ev_from_start "{{`{{ workflow.parameters.background_ev_from_start }}`}}" \
+            -p background_ev_from_end "{{`{{ workflow.parameters.background_ev_from_end }}`}}" \
+            -p peak_width_ev "{{`{{ workflow.parameters.peak_width_ev }}`}}" \
+            -p sample_name "{{`{{ workflow.parameters.sample_name }}`}}" \
+            -p edge_label "{{`{{ workflow.parameters.edge_label }}`}}" \
+            -p n_holes "{{`{{ workflow.parameters.n_holes }}`}}" \
           python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
@@ -76,11 +88,20 @@ spec:
             path: /tmp/notebook.html
             archive:
               none: {}
+          - name: xas_scans
+            path: /tmp/xas_scans.png
+            archive:
+              none: {}
+          - name: xas_average
+            path: /tmp/xas_average.png
+            archive:
+              none: { }
+          - name: xmcd
+            path: /tmp/xmcd.png
+            archive:
+              none: { }
     - name: xas-notebook
       dag:
         tasks:
-          - name: mount-files
-            template: mount-files
-          - name: convert-notebook
-            template: convert-notebook
-            dependencies: [mount-files]
+          - name: run-xas-notebook
+            template: run-xas-notebook

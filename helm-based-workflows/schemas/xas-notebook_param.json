@@ -1,0 +1,82 @@
+{
+  "type": "object",
+  "properties": {
+    "scan_numbers_str": {
+      "type": "string",
+      "default": "12345, 12346-12350"
+    },
+    "background_subtraction": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "none",
+          "title": "No background subtraction"
+        },
+        {
+          "const": "flat",
+          "title": "Subtract flat background"
+        },
+        {
+          "const": "linear",
+          "title": "Subtract linear sloped background"
+        },
+        {
+          "const": "curve",
+          "title": "Subtracted polynomial background"
+        },
+        {
+          "const": "exp",
+          "title": "Subtract fitted-exponential background"
+        },
+        {
+          "const": "step",
+          "title": "Subtract flat background with step in the middle"
+        },
+        {
+          "const": "auto_edge_background",
+          "title": "Automatically subtract contribution from each edge [dev]"
+        }
+      ],
+      "default": "linear"
+    },
+    "background_ev_from_start": {
+      "type": "number",
+      "default": 5
+    },
+    "background_ev_from_end": {
+      "type": "number",
+      "default": 5
+    },
+    "sample_name": {
+      "type": "string",
+      "default": "none"
+    },
+    "edge_label": {
+      "type": "string",
+      "default": "none",
+      "onOf": [
+        {
+          "const": "none",
+          "title": "Automatic edge determination"
+        },
+        {
+          "const": "Cu L3, L2",
+          "title": "Copper L edge"
+        },
+        {
+          "const": "Fe L3, L2",
+          "title": "Iron L edge"
+        },
+        {
+          "const": "Mn L3, L2",
+          "title": "Manganese L edge"
+        }
+      ]
+    },
+    "n_holes": {
+      "type": "number",
+      "default": 1
+    }
+  },
+  "required": ["scan_numbers_str"]
+}
