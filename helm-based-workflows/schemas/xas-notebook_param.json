@@ -75,7 +75,7 @@
           "title": "Manganese L edge"
         }
       ],
-      "default": "Automatic edge determination"
+      "default": "none"
     },
     "n_holes": {
       "type": "number",
