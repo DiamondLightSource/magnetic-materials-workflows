@@ -34,7 +34,8 @@ spec:
   volumes:
     - name: session
       hostPath:
-        path: "{{`{{ workflow.parameters.visitdir }}`}}"
+        path: "{{`/dls/staging/{{ workflow.parameters.visitdir }}`}}"
+        #path: "{{`{{ workflow.parameters.visitdir }}`}}"
         type: Directory
   volumeClaimTemplates:
     - metadata:
@@ -61,7 +62,7 @@ spec:
           export JAVA_TOOL_OPTIONS=-Duser.name=workflows
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
-            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+            -p datadir "{{`/dls/staging/{{ workflow.parameters.visitdir }}`}}" \
             -p scan_numbers "{{`{{ workflow.parameters.scan_numbers }}`}}" \
             -p step "{{`{{ workflow.parameters.step }}`}}" \
             -p reduce_box "{{`{{ workflow.parameters.reduce_box }}`}}" \
@@ -71,7 +72,7 @@ spec:
           - name: tmp
             mountPath: /tmp
           - name: session
-            mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+            mountPath: "{{`/dls/staging/{{ workflow.parameters.visitdir }}`}}"
       outputs:
         artifacts:
           - name: notebook
