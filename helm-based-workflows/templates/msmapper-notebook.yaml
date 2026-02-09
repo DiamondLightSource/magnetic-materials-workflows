@@ -34,6 +34,7 @@ spec:
   volumes:
     - name: session
       hostPath:
+        # TODO remove staging once tested
         path: "{{`/dls/staging/{{ workflow.parameters.visitdir }}`}}"
         #path: "{{`{{ workflow.parameters.visitdir }}`}}"
         type: Directory
@@ -50,7 +51,7 @@ spec:
   templates:
     - name: run-msmapper-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:v0.2.1
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows/msmapper:additional_images
         command: [bash]
         source: |
           # mount-files
