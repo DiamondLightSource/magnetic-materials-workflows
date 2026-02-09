@@ -1,4 +1,8 @@
 # magnetic-materials-workflows
+
+This repository contains workflow templates and Docker images for use in Diamond's 
+argus-workflows data analysis platform.
+
 ## Workflows Templates
 See [workflows.diamond.ac.uk](workflows.diamond.ac.uk)
 
@@ -12,7 +16,8 @@ See [workflows.diamond.ac.uk](workflows.diamond.ac.uk)
 
 
 ## miniconda environment
-Contains a Docker image that includes:
+Contains several Docker images that includes a python environment and other useful software. 
+The python environment includes:
 * conda-forge miniconda python environment with:
   * numpy
   * matplotlib
@@ -21,10 +26,3 @@ Contains a Docker image that includes:
   * hdfmap
   * nexus2srs
   * mmg_toolbox
-
-At DLS, the image can be run using, for example:
-```bash
-podman run -it ghcr.io/diamondlightsource/magnetic-materials-workflows:0.2.0-rc1 /bin/bash
-```
-
-To update the Docker image, make changes to [Dockerfile](Dockerfile) and create a new release.

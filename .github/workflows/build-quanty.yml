@@ -1,0 +1,140 @@
+
+name: Publish Quanty Docker image to GitHub Packages
+
+# This workflow does not run because it cannot access the Quanty file online.
+on: {}
+#  push:
+#  release:
+#    types: [published]
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  # This sets the repo namespace; the image name will be ghcr.io/<repo>/quanty
+  IMAGE_BASE: ${{ github.repository }}
+  DOCKER_BUILDKIT: '1'
+  COMPOSE_DOCKER_CLI_BUILD: '1'
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install helpers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+
+      # --- Authenticated download of Quanty Linux ZIP ---
+      # Rationale:
+      #  - Quanty's Download area shows platform links only after login. [1](https://www.quanty.org/download)
+      #  - The site runs DokuWiki; passing `u` and `p` triggers login and sets a cookie. [2](https://www.dokuwiki.org/devel:authentication)
+      #  - We download outside the Docker build to avoid embedding credentials in the image.
+      - name: Download Quanty (Linux ZIP)
+        working-directory: images/quanty
+        env:
+          Q_USER: ${{ secrets.QUANTY_USERNAME }}
+          Q_PASS: ${{ secrets.QUANTY_PASSWORD }}
+        run: |
+          set -eu
+
+          # 1) Login (sets session cookie)
+          curl -sS -c quanty_cookies.txt \
+            "https://www.quanty.org/doku.php?id=download&u=${Q_USER}&p=${Q_PASS}&r=1" \
+            -o /dev/null
+
+          # 2) Fetch downloads page (authenticated)
+          curl -sS -b quanty_cookies.txt -L "https://www.quanty.org/download" -o download.html
+
+          # 3) Extract Linux link from anchor text (record separator per <a>)
+          URL=$(
+            awk '
+              BEGIN{ IGNORECASE=1; RS="</a>"; ORS="" }
+              /Download[[:space:]]+Quanty[[:space:]]+for[[:space:]]+Linux/ {
+                if (match($0, /href="([^"]+)"/, m)) { print m[1]; exit }
+              }
+            ' download.html
+          )
+
+          if [ -z "${URL}" ]; then
+            echo "Could not locate the Linux download link in download.html"
+            exit 1
+          fi
+
+          # 4) Normalize to absolute URL if it starts with '/'
+          BASE="https://www.quanty.org"
+          case "$URL" in
+            /*) URL="${BASE}${URL}" ;;
+          esac
+          echo "Resolved Linux URL: ${URL}"
+
+          # 5) Download the ZIP using the authenticated cookie
+          curl -L -b quanty_cookies.txt -o quanty-linux.zip "${URL}"
+
+          # 6) Validate: must be a ZIP (fast fail if HTML or empty)
+          if ! file quanty-linux.zip | grep -qi 'zip archive'; then
+            echo "Downloaded file is not a ZIP:"
+            file quanty-linux.zip || true
+            echo "First lines for debugging:"
+            head -n 50 quanty-linux.zip || true
+            exit 1
+          fi
+
+          # Extra robustness: test zip integrity
+          unzip -t quanty-linux.zip
+      
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.5.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # We want this repo to publish multiple images; this job is for "quanty".
+      # metadata-action will generate tags/labels based on the release ref.
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.8.0
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_BASE }}/quanty
+          # On a release event, this includes the release tag (e.g., v1.2.3).
+          # Add 'latest' for releases as well:
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest
+
+      # Build and push with the Quanty ZIP passed as a BuildKit secret:
+      #  - Keeps the vendor ZIP out of the build context, layers, and caches.
+      #  - Only the final executable is installed into the image (cleaner SBOM).
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: images/quanty
+          file: images/quanty/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Inject the downloaded ZIP without persisting it into layers
+          secrets: |
+            "quanty_zip=images/quanty/quanty-linux.zip"
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE }}/quanty
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
