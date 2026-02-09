@@ -1,6 +1,7 @@
 
 name: Publish Quanty Docker image to GitHub Packages
 
+# This workflow does not run because it cannot access the Quanty file online.
 on: {}
 #  push:
 #  release:
