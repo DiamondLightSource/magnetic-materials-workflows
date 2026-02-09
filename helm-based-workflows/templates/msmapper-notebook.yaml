@@ -3,7 +3,7 @@ kind: ClusterWorkflowTemplate
 metadata:
   name: msmapper-notebook
   labels:
-    workflows.diamond.ac.uk/science-group: magnetic-materials-group
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
   annotations:
     workflows.argoproj.io/title: Reciprocal Space Mapper
     workflows.argoproj.io/description: |
@@ -34,7 +34,9 @@ spec:
   volumes:
     - name: session
       hostPath:
-        path: "{{`{{ workflow.parameters.visitdir }}`}}"
+        # TODO remove staging once tested
+        path: "{{`/dls/staging/{{ workflow.parameters.visitdir }}`}}"
+        #path: "{{`{{ workflow.parameters.visitdir }}`}}"
         type: Directory
   volumeClaimTemplates:
     - metadata:
@@ -49,7 +51,7 @@ spec:
   templates:
     - name: run-msmapper-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows/msmapper
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows/msmapper:additional_images
         command: [bash]
         source: |
           # mount-files
@@ -61,17 +63,17 @@ spec:
           export JAVA_TOOL_OPTIONS=-Duser.name=workflows
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
-            -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+            -p datadir "{{`/dls/staging/{{ workflow.parameters.visitdir }}`}}" \
             -p scan_numbers "{{`{{ workflow.parameters.scan_numbers }}`}}" \
             -p step "{{`{{ workflow.parameters.step }}`}}" \
             -p reduce_box "{{`{{ workflow.parameters.reduce_box }}`}}" \
             -p normalisation "{{`{{ workflow.parameters.normalisation }}`}}"
-          python -m nbconvert --execute --allow-errors --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+          python -m nbconvert --allow-errors --to html --output-dir /tmp /tmp/notebook.ipynb
         volumeMounts:
           - name: tmp
             mountPath: /tmp
           - name: session
-            mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+            mountPath: "{{`/dls/staging/{{ workflow.parameters.visitdir }}`}}"
       outputs:
         artifacts:
           - name: notebook

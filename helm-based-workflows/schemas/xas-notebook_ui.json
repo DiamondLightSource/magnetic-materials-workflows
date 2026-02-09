@@ -1,0 +1,79 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Group",
+      "label": "Scan Numbers",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/scan_numbers_str",
+          "label": "Scan Numbers"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Background",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/background_subtraction",
+              "label": "Background subtraction option"
+            },
+            {
+              "type": "HorizontalLayout",
+              "label": "Background Parameters",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/background_ev_from_start",
+                  "label": "flat region eV from start"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/background_ev_from_end",
+                  "label": "flat region eV from end"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/peak_width_ev",
+                  "label": "absorption peak width in eV"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Metadata",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/sample_name",
+              "label": "Sample name"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/edge_label",
+              "label": "Absorption edge"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/n_holes",
+              "label": "Number of holes for element Sum Rules analysis"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
