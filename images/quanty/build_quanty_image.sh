@@ -30,6 +30,7 @@ fi
 #--------------------------------------------------------------
 echo "==> podman build ${IMAGE_REF}"
 podman build \
+  --no-cache \
   --tag "$IMAGE_REF" \
   --secret id=quanty_zip,src="$ZIP" \
   "$BUILD_CONTEXT"
@@ -40,6 +41,8 @@ podman build \
 #--------------------------------------------------------------
 # podman tag localhost/quanty:latest ghcr.io/diamondlightsource/magnetic-materials-workflows/quanty:latest
 # podman push ghcr.io/diamondlightsource/magnetic-materials-workflows/quanty:latest
+echo "Login to ghcr.io using token"
+podman login ghcr.io -u DanPorter
 echo
 echo "==> Pushing $IMAGE_REF"
 podman push "$IMAGE_REF"

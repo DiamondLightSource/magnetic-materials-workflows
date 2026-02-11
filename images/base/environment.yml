@@ -16,6 +16,7 @@ dependencies:
   - hdf5plugin
   - imageio
   - scipy
+  - dominate
   - lmfit
   - hdfmap
   - pip

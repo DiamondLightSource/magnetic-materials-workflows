@@ -51,7 +51,7 @@ spec:
   templates:
     - name: run-msmapper-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows/msmapper:additional_images
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows/msmapper:latest
         command: [bash]
         source: |
           # mount-files

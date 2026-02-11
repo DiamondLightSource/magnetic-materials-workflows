@@ -57,7 +57,7 @@ spec:
   templates:
     - name: run-xas-notebook
       script:
-        image: ghcr.io/diamondlightsource/magnetic-materials-workflows:latest
+        image: ghcr.io/diamondlightsource/magnetic-materials-workflows/base:latest
         command: [bash]
         source: |
           # mount files
