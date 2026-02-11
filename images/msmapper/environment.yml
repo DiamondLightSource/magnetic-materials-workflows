@@ -18,3 +18,4 @@ dependencies:
   - pip:
       - nexus2srs
       - mmg_toolbox
+      - dominate
