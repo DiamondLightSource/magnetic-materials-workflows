@@ -68,6 +68,11 @@ spec:
             -p reduce_box "{{`{{ workflow.parameters.reduce_box }}`}}" \
             -p normalisation "{{`{{ workflow.parameters.normalisation }}`}}"
           python -m nbconvert --allow-errors --to html --output-dir /tmp /tmp/notebook.ipynb
+        resources:
+          requests:
+            memory: 24Gi
+          limits:
+            memory: 24Gi
         volumeMounts:
           - name: tmp
             mountPath: /tmp
