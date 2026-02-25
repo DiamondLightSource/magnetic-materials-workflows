@@ -78,6 +78,11 @@ spec:
             -p n_holes "{{`{{ workflow.parameters.n_holes }}`}}"
           # convert notebook to html
           python -m nbconvert --allow-errors --to html --output-dir /tmp /tmp/notebook.ipynb
+        resources:
+          requests:
+            memory: 4Gi
+          limits:
+            memory: 4Gi
         volumeMounts:
           - name: tmp
             mountPath: /tmp
