@@ -8,7 +8,7 @@ metadata:
     workflows.argoproj.io/title: Convert .nxs to .dat
     workflows.argoproj.io/description: |
       Does what it says on the tin.
-    workflows.argoproj.io/repository: |
+    workflows.diamond.ac.uk/repository: |
       "https://github.com/DiamondLightSource/magnetic-materials-workflows"
     workflows.diamond.ac.uk/parameter-schema: |
       {{- .Files.Get "schemas/convert-to-dat_param.json" | nindent 6 }}
@@ -23,6 +23,11 @@ spec:
         configMapKeyRef:
           name: sessionspaces
           key: data_directory
+    - name: scan_numbers
+    - name: dat_file
+    - name: all_scans
+    - name: write_tiff
+    - name: overwrite
   volumes:
   - name: session
     hostPath:
@@ -36,16 +41,9 @@ spec:
       resources:
         requests:
           storage: 1Gi
-        storageClassName: netapp
+      storageClassName: netapp
   templates:
   - name: convert-to-dat
-    inputs:
-      parameters:
-      - name: scan_numbers
-      - name: dat_file
-      - name: all_scans
-      - name: write_tiff
-      - name: overwrite
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows
       volumeMounts:
@@ -60,11 +58,11 @@ spec:
         # run notebook
         python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
           -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
-          -p scan_numbers_string "{{`{{ inputs.parameters.scan_numbers }}`}}" \
-          -p dat_file "{{`{{ inputs.parameters.dat_file }}`}}" \
-          -p all_scans "{{`{{ inputs.parameters.all_scans }}`}}" \
-          -p write_tiff "{{`{{ inputs.parameters.write_tiff }}`}}" \
-          -p overwrite "{{`{{ inputs.parameters.overwrite }}`}}"
+          -p scan_numbers_string "{{`{{ workflow.parameters.scan_numbers }}`}}" \
+          -p dat_file "{{`{{ workflow.parameters.dat_file }}`}}" \
+          -p all_scans "{{`{{ workflow.parameters.all_scans }}`}}" \
+          -p write_tiff "{{`{{ workflow.parameters.write_tiff }}`}}" \
+          -p overwrite "{{`{{ workflow.parameters.overwrite }}`}}"
         python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
     outputs:
       artifacts:

@@ -4,6 +4,8 @@ metadata:
   name: mmg-test-python
   labels:
     workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
+  annotations:
+    workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
 spec:
   entrypoint: mmg-test-python
   arguments:
