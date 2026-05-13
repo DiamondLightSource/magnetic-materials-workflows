@@ -23,6 +23,16 @@ spec:
         configMapKeyRef:
           name: sessionspaces
           key: data_directory
+    - name: scan_numbers
+    - name: all_scans
+    - name: print_start_time
+    - name: print_cmd
+    - name: print_temp
+    - name: print_energy
+    - name: print_sx
+    - name: print_sy
+    - name: print_sz
+    - name: other_vars
   volumes:
   - name: session
     hostPath:
@@ -36,21 +46,9 @@ spec:
       resources:
         requests:
           storage: 1Gi
-        storageClassName: netapp
+      storageClassName: netapp
   templates:
   - name: list-and-plot
-    inputs:
-      parameters:
-      - name: scan_numbers
-      - name: all_scans
-      - name: print_start_time
-      - name: print_cmd
-      - name: print_temp
-      - name: print_energy
-      - name: print_sx
-      - name: print_sy
-      - name: print_sz
-      - name: other_vars
     script:
       image: ghcr.io/diamondlightsource/magnetic-materials-workflows
       volumeMounts:
@@ -65,16 +63,16 @@ spec:
         # run notebook
         python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
           -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
-          -p scan_numbers_string "{{`{{ inputs.parameters.scan_numbers }}`}}" \
-          -p all_scans "{{`{{ inputs.parameters.all_scans }}`}}" \
-          -p print_start_time "{{`{{ inputs.parameters.print_start_time }}`}}" \
-          -p print_cmd "{{`{{ inputs.parameters.print_cmd }}`}}" \
-          -p print_temp "{{`{{ inputs.parameters.print_temp }}`}}" \
-          -p print_energy "{{`{{ inputs.parameters.print_energy}}`}}" \
-          -p print_sx "{{`{{ inputs.parameters.print_sx }}`}}" \
-          -p print_sy "{{`{{ inputs.parameters.print_sy }}`}}" \
-          -p print_sz "{{`{{ inputs.parameters.print_sz }}`}}" \
-          -p other_vars "{{`{{ inputs.parameters.other_vars }}`}}"
+          -p scan_numbers_string "{{`{{ workflow.parameters.scan_numbers }}`}}" \
+          -p all_scans "{{`{{ workflow.parameters.all_scans }}`}}" \
+          -p print_start_time "{{`{{ workflow.parameters.print_start_time }}`}}" \
+          -p print_cmd "{{`{{ workflow.parameters.print_cmd }}`}}" \
+          -p print_temp "{{`{{ workflow.parameters.print_temp }}`}}" \
+          -p print_energy "{{`{{ workflow.parameters.print_energy}}`}}" \
+          -p print_sx "{{`{{ workflow.parameters.print_sx }}`}}" \
+          -p print_sy "{{`{{ workflow.parameters.print_sy }}`}}" \
+          -p print_sz "{{`{{ workflow.parameters.print_sz }}`}}" \
+          -p other_vars "{{`{{ workflow.parameters.other_vars }}`}}"
         python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
     outputs:
       artifacts:
