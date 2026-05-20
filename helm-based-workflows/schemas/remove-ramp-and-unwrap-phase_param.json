@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "scan_number": {
+      "type": "number"
+    },
+    "ramp_x1": {
+      "type": "string",
+      "default": "None",
+      "pattern": "^None$|^\\d+$"
+    },
+    "ramp_x2": {
+      "type": "string",
+      "default": "None",
+      "pattern": "^None$|^\\d+$"
+    },
+    "ramp_y1": {
+      "type": "string",
+      "default": "None",
+      "pattern": "^None$|^\\d+$"
+    },
+    "ramp_y2": {
+      "type": "string",
+      "default": "None",
+      "pattern": "^None$|^\\d+$"
+    },
+    "crop": {
+      "type": "number",
+      "default": 0   
+    }
+  }
+}

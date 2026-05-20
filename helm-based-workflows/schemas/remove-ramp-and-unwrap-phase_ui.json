@@ -1,0 +1,35 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/scan_number",
+      "label": "Scan Number"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/ramp_x1",
+      "label": "Ramp X1"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/ramp_x2",
+      "label": "Ramp X2"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/ramp_y1",
+      "label": "Ramp Y1"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/ramp_y2",
+      "label": "Ramp Y2"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/crop",
+      "label": "Crop"
+    }
+  ]
+}
