@@ -1,0 +1,81 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: phase-ramp-removal
+  labels:
+    workflows.diamond.ac.uk/science-group-magnetic-materials: "true"
+  annotations:
+    workflows.argoproj.io/title: Phase Ramp Removal
+    workflows.argoproj.io/description: |
+      Runs a notebook that demostrates the remove_ramp_and_unwrap_phase function from the imaging_toolbox.
+    workflows.diamond.ac.uk/repository: |
+      "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.diamond.ac.uk/parameter-schema: |
+      {{- .Files.Get "schemas/remove-ramp-and-unwrap-phase_param.json" | nindent 6 }}
+    workflows.diamond.ac.uk/ui-schema: |
+      {{- .Files.Get "schemas/remove-ramp-and-unwrap-phase_ui.json" | nindent 6 }}
+spec:
+  entrypoint: workflow-entry
+  arguments:
+    parameters:
+    - name: visitdir
+      valueFrom:
+        configMapKeyRef:
+          name: sessionspaces
+          key: data_directory
+    - name: scan_number
+    - name: ramp_x1
+    - name: ramp_x2
+    - name: ramp_y1
+    - name: ramp_y2
+    - name: crop
+  volumes:
+  - name: session
+    hostPath:
+      path: "{{`{{ workflow.parameters.visitdir }}`}}"
+      type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: tmp
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: netapp
+  templates:
+  - name: phase-ramp-removal
+    script:
+      image: ghcr.io/diamondlightsource/magnetic-materials-workflows
+      volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+      - name: session
+        mountPath: "{{`{{ workflow.parameters.visitdir }}`}}"
+      command: [bash]
+      source: |
+        # mount files
+        echo '{{ .Files.Get "notebooks/remove_ramp_and_unwrap_phase.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
+        # install imaging_toolbox
+        python -m pip install imaging_toolbox
+        python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
+          -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
+          -p scan_number {{`{{ workflow.parameters.scan_number }}`}}
+          -p ramp_x1 {{`{{ workflow.parameters.ramp_x1 }}`}} \
+          -p ramp_x2 {{`{{ workflow.parameters.ramp_x2 }}`}} \
+          -p ramp_y1 {{`{{ workflow.parameters.ramp_y1 }}`}} \
+          -p ramp_y2 {{`{{ workflow.parameters.ramp_y2 }}`}} \
+          -p crop {{`{{ workflow.parameters.crop }}`}} \
+        python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
+    outputs:
+      artifacts:
+      - name: notebook
+        path: /tmp/notebook.html
+        archive:
+          none: {}
+  - name: workflow-entry
+    dag:
+      tasks:
+      - name: phase-ramp-removal
+        template: phase-ramp-removal
+        
