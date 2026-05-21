@@ -24,13 +24,20 @@ spec:
             name: sessionspaces
             key: data_directory
       - name: scan_numbers
-        value: "12345, 12346"
+      - name: output_mode
+      - name: crystal_frame
+      - name: splitter_name
+      - name: splitter_parameter
+      - name: scale_factor
+      - name: third_axis
+      - name: azi_plane_normal
+      - name: correct_polarisation
+      - name: region
       - name: step
-        value: "[0.002]"
+      - name: start
+      - name: shape
       - name: reduce_box
-        value: "true"
       - name: normalisation
-        value: 'rc'
   volumes:
     - name: session
       hostPath:
@@ -64,7 +71,18 @@ spec:
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
             -p scan_numbers "{{`{{ workflow.parameters.scan_numbers }}`}}" \
+            -p output_mode "{{`{{ workflow.parameters.output_mode }}`}}" \
+            -p crystal_frame "{{`{{ workflow.parameters.crystal_frame }}`}}" \
+            -p splitter_name "{{`{{ workflow.parameters.splitter_name }}`}}" \
+            -p splitter_parameter {{`{{ workflow.parameters.splitter_parameter }}`}} \
+            -p scale_factor {{`{{ workflow.parameters.scale_factor }}`}} \
+            -p third_axis "{{`{{ workflow.parameters.third_axis }}`}}" \
+            -p azi_plane_normal "{{`{{ workflow.parameters.azi_plane_normal}}`}}" \
+            -p correct_polarisation "{{`{{ workflow.parameters.correct_polarisation }}`}}" \
+            -p region "{{`{{ workflow.parameters.region }}`}}" \
             -p step "{{`{{ workflow.parameters.step }}`}}" \
+            -p start "{{`{{ workflow.parameters.start }}`}}" \
+            -p shape "{{`{{ workflow.parameters.shape }}`}}" \
             -p reduce_box "{{`{{ workflow.parameters.reduce_box }}`}}" \
             -p normalisation "{{`{{ workflow.parameters.normalisation }}`}}"
           python -m nbconvert --allow-errors --to html --output-dir /tmp /tmp/notebook.ipynb
