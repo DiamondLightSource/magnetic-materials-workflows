@@ -8,8 +8,63 @@
     },
     {
       "type": "Control",
+      "scope": "#/properties/output_mode",
+      "label": "Output Mode"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/crystal_frame",
+      "label": "Crystal Frame"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/splitter_name",
+      "label": "Splitter Name"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/splitter_parameter",
+      "label": "Splitter Parameter"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/scale_factor",
+      "label": "Scale Factor"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/third_axis",
+      "label": "Direction of Third Axis"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/azi_plane_normal",
+      "label": "Azimuthal Reference Plane"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/correct_polarisation",
+      "label": "Correct Polarisation"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/region",
+      "label": "Region of Interest"
+    },
+    {
+      "type": "Control",
       "scope": "#/properties/step",
       "label": "HKL Step"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/start",
+      "label": "HKL Start"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/shape",
+      "label": "Shape of Reciprocal Space Volume"
     },
     {
       "type": "Control",
