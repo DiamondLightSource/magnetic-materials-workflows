@@ -46,7 +46,7 @@ spec:
   templates:
   - name: phase-ramp-removal
     script:
-      image: ghcr.io/diamondlightsource/magnetic-materials-workflows
+      image: ghcr.io/diamondlightsource/imaging_toolbox
       volumeMounts:
       - name: tmp
         mountPath: /tmp
@@ -56,8 +56,6 @@ spec:
       source: |
         # mount files
         echo '{{ .Files.Get "notebooks/remove_ramp_and_unwrap_phase.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
-        # install imaging_toolbox
-        python -m pip install imaging_toolbox
         python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
           -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
           -p scan_number {{`{{ workflow.parameters.scan_number }}`}}
