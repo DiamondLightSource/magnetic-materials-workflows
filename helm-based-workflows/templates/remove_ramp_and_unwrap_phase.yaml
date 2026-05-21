@@ -63,7 +63,7 @@ spec:
           -p ramp_x2 "{{`{{ workflow.parameters.ramp_x2 }}`}}" \
           -p ramp_y1 "{{`{{ workflow.parameters.ramp_y1 }}`}}" \
           -p ramp_y2 "{{`{{ workflow.parameters.ramp_y2 }}`}}" \
-          -p crop "{{`{{ workflow.parameters.crop }}`}}
+          -p crop "{{`{{ workflow.parameters.crop }}`}}"
         python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
     outputs:
       artifacts:
