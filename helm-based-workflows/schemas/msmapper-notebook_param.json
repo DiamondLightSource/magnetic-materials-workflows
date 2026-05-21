@@ -5,9 +5,93 @@
       "type": "string",
       "default": "12345, 12346"
     },
+    "output_mode": {
+      "type": "string",
+      "enum": [
+        "Area_HK",
+        "Area_KL",
+        "Area_LH",
+        "Area_QPP",
+        "Area_QXY",
+        "Area_QYZ",
+        "Area_QZX",
+        "Coords_HKL",
+        "Coords_Q",
+        "Line_2Theta",
+        "Line_H",
+        "Line_K",
+        "Line_L",
+        "Line_QX",
+        "Line_QY",
+        "Line_Theta",
+        "Volume_HKL",
+        "Volume_Q",
+        "Volume_QCP",
+        "Volume_QES"
+      ],
+      "default": "Volume_HKL"
+    },
+    "crystal_frame": {
+      "type": "boolean",
+      "default": false
+    },
+    "splitter_name": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "nearest",
+          "title": "Nearest"
+        },
+        {
+          "const": "gaussian",
+          "title": "Gaussian"
+        },
+        {
+          "const": "negexp",
+          "title": "Negative Exponential"
+        },
+        {
+          "const": "inverse",
+          "title": "Inverse"
+        }
+      ],
+      "default": "nearest"
+    },
+    "splitter_parameter": {
+      "type": "number",
+      "default": 2.0
+    },
+    "scale_factor": {
+      "type": "number",
+      "default": 2.0
+    },
+    "third_axis": {
+      "type": "string",
+      "default": "None"
+    },
+    "azi_plane_normal": {
+      "type": "string",
+      "default": "None"
+    },
+    "correct_polarisation": {
+      "type": "boolean",
+      "default": false
+    },
+    "region": {
+      "type": "string",
+      "default": "None"
+    },
     "step": {
       "type": "string",
-      "default": "0.002"
+      "default": "None"
+    },
+    "start": {
+      "type": "string",
+      "default": "None"
+    },
+    "shape": {
+      "type": "string",
+      "default": "None"
     },
     "reduce_box": {
       "type": "boolean",
