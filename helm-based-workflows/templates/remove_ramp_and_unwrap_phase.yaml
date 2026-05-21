@@ -58,12 +58,12 @@ spec:
         echo '{{ .Files.Get "notebooks/remove_ramp_and_unwrap_phase.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
         python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
           -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
-          -p scan_number {{`{{ workflow.parameters.scan_number }}`}}
-          -p ramp_x1 {{`{{ workflow.parameters.ramp_x1 }}`}} \
-          -p ramp_x2 {{`{{ workflow.parameters.ramp_x2 }}`}} \
-          -p ramp_y1 {{`{{ workflow.parameters.ramp_y1 }}`}} \
-          -p ramp_y2 {{`{{ workflow.parameters.ramp_y2 }}`}} \
-          -p crop {{`{{ workflow.parameters.crop }}`}} \
+          -p scan_number "{{`{{ workflow.parameters.scan_number }}`}}" \
+          -p ramp_x1 "{{`{{ workflow.parameters.ramp_x1 }}`}}" \
+          -p ramp_x2 "{{`{{ workflow.parameters.ramp_x2 }}`}}" \
+          -p ramp_y1 "{{`{{ workflow.parameters.ramp_y1 }}`}}" \
+          -p ramp_y2 "{{`{{ workflow.parameters.ramp_y2 }}`}}" \
+          -p crop "{{`{{ workflow.parameters.crop }}`}} \
         python -m nbconvert --to html --output notebook --output-dir /tmp /tmp/notebook.ipynb
     outputs:
       artifacts:
