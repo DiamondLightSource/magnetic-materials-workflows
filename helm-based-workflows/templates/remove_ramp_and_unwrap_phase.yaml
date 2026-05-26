@@ -57,7 +57,9 @@ spec:
         # mount files
         echo '{{ .Files.Get "notebooks/remove_ramp_and_unwrap_phase.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
         mkdir -p /tmp/mpl
+        mkdir -p /tmp/ipython
         export MPLCONFIGDIR=/tmp/mpl
+        export IPYTHONDIR=/tmp/ipython
         python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
           -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
           -p scan_number "{{`{{ workflow.parameters.scan_number }}`}}" \
