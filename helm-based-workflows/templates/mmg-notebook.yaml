@@ -46,9 +46,7 @@ spec:
           echo '{{ .Files.Get "notebooks/mmg_processor.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
           # create matplotlib config dir
           mkdir -p /tmp/mpl
-          mkdir -p /tmp/ipython
           export MPLCONFIGDIR=/tmp/mpl
-          export IPYTHONDIR=/tmp/ipython
           # run notebook
           python -m papermill /tmp/notebook.ipynb /tmp/notebook.ipynb \
             -p datadir "{{`{{ workflow.parameters.visitdir }}`}}" \
