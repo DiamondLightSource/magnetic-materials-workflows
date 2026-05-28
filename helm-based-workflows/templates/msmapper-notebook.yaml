@@ -64,7 +64,11 @@ spec:
           echo '{{ .Files.Get "notebooks/msmapper_notebook.ipynb" | b64enc }}' | base64 -d > /tmp/notebook.ipynb
           # create matplotlib config dir
           mkdir -p /tmp/mpl
+          mkdir -p /tmp/ipython
+          mkdir -p /tmp/jupyter
           export MPLCONFIGDIR=/tmp/mpl
+          export IPYTHONDIR=/tmp/ipython
+          export JUPYTER_CONFIG_DIR=/tmp/jupyter
           # set msmapper java options
           export JAVA_TOOL_OPTIONS=-Duser.name=workflows
           # run notebook
