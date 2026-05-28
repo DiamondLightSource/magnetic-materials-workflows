@@ -8,8 +8,7 @@ metadata:
     workflows.argoproj.io/title: Phase Ramp Removal
     workflows.argoproj.io/description: |
       Runs a notebook that demostrates the remove_ramp_and_unwrap_phase function from the imaging_toolbox.
-    workflows.diamond.ac.uk/repository: |
-      "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
     workflows.diamond.ac.uk/parameter-schema: |
       {{- .Files.Get "schemas/remove-ramp-and-unwrap-phase_param.json" | nindent 6 }}
     workflows.diamond.ac.uk/ui-schema: |

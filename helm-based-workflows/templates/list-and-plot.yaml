@@ -8,8 +8,7 @@ metadata:
     workflows.argoproj.io/title: List and Plot
     workflows.argoproj.io/description: |
       Lists and plots all of the scans within a given directory.
-    workflows.diamond.ac.uk/repository: |
-      "https://github.com/DiamondLightSource/magnetic-materials-workflows"
+    workflows.diamond.ac.uk/repository: "https://github.com/DiamondLightSource/magnetic-materials-workflows"
     workflows.diamond.ac.uk/parameter-schema: |
       {{- .Files.Get "schemas/list-and-plot_param.json" | nindent 6 }}
     workflows.diamond.ac.uk/ui-schema: |
