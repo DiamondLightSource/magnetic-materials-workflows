@@ -47,6 +47,11 @@ spec:
   - name: phase-ramp-removal
     script:
       image: ghcr.io/diamondlightsource/imaging_toolbox
+      resources:
+        requests:
+          memory: 4Gi
+        limits:
+          memory: 4Gi
       volumeMounts:
       - name: tmp
         mountPath: /tmp
