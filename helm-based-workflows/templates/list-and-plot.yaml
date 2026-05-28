@@ -11,9 +11,9 @@ metadata:
     workflows.diamond.ac.uk/repository: |
       "https://github.com/DiamondLightSource/magnetic-materials-workflows"
     workflows.diamond.ac.uk/parameter-schema: |
-      {{- .Files.Get "schemas/msmapper-notebook_param.json" | nindent 6 }}
+      {{- .Files.Get "schemas/list-and-plot_param.json" | nindent 6 }}
     workflows.diamond.ac.uk/ui-schema: |
-      {{- .Files.Get "schemas/msmapper-notebook_ui.json" | nindent 6 }}
+      {{- .Files.Get "schemas/list-and-plot_ui.json" | nindent 6 }}
 spec:
   entrypoint: workflow-entry
   arguments:
