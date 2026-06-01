@@ -127,6 +127,11 @@ spec:
             path: /tmp/tmp_remap.json
             archive:
               none: {}
+          - name: peak-fits
+            path: /tmp/msmapper_peak_fits.png
+            optional: true
+            archive:
+              none: {}
     - name: msmapper-notebook
       dag:
         tasks:
