@@ -92,9 +92,9 @@ spec:
           python -m nbconvert --allow-errors --to html --output-dir /tmp /tmp/notebook.ipynb
         resources:
           requests:
-            memory: 32Gi
+            memory: 40Gi
           limits:
-            memory: 32Gi
+            memory: 40Gi
         volumeMounts:
           - name: tmp
             mountPath: /tmp
