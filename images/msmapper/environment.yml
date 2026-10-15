@@ -16,6 +16,7 @@ dependencies:
   - lmfit
   - plotly
   - anywidget
+  - kaleido
   - hdfmap
   - nexus2srs
   - mmg_toolbox
