@@ -12,10 +12,10 @@ dependencies:
   - hdf5plugin
   - imageio
   - scipy
+  - dominate
   - lmfit
+  - plotly
+  - ipywidgets
   - hdfmap
-  - pip
-  - pip:
-      - nexus2srs
-      - mmg_toolbox
-      - dominate
+  - nexus2srs
+  - mmg_toolbox

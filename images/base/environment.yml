@@ -19,7 +19,5 @@ dependencies:
   - dominate
   - lmfit
   - hdfmap
-  - pip
-  - pip:
-      - nexus2srs
-      - mmg_toolbox
+  - nexus2srs
+  - mmg_toolbox
