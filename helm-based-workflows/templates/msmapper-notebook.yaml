@@ -116,7 +116,7 @@ spec:
             archive:
               none: {}
           - name: voxel-image
-            path: /tmp/msmapper_voxel.png
+            path: /tmp/msmapper_voxel.html
             archive:
               none: {}
           - name: msmapper-log
