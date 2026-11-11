@@ -104,9 +104,13 @@ spec:
       outputs:
         artifacts:
           - name: notebook
-            path: /tmp/notebook.html
+            path: /tmp/notebook.ipynb
             archive:
               none: {}
+          - name: notebook_html
+            path: /tmp/notebook.html
+            archive:
+              none: { }
           - name: image
             path: /tmp/msmapper_result.png
             archive:
